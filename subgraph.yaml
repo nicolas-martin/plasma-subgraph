@@ -1,0 +1,41 @@
+specVersion: 0.0.4
+description: POAP
+repository: https://github.com/poap-xyz/poap-mainnet-subgraph
+schema:
+    file: ./schema.graphql
+dataSources:
+    - kind: ethereum/contract
+      name: RTB
+      network: plasma-testnet
+      source:
+          address: "0xd0213a1413821344a9a440d560a98b032647a1ee"
+          abi: rtb
+          startBlock: 2981260
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.6
+          language: wasm/assemblyscript
+          entities:
+              - Game
+              - Player
+              - Round
+              - House
+          abis:
+              - name: rtb
+                file: ./abis/rtb.json
+          eventHandlers:
+              - event: Busted(indexed uint256)
+                handler: handleBusted
+              - event: CashedOut(indexed uint256,indexed address,uint256)
+                handler: handleCashedOut
+              - event: GameStarted(indexed uint256,indexed address,uint256)
+                handler: handleGameStarted
+              - event: HouseFunded(uint256)
+                handler: handleHouseFunded
+              - event: HouseWithdrawn(uint256)
+                handler: handleHouseWithdrawn
+              - event: OwnershipTransferred(indexed address,indexed address)
+                handler: handleOwnershipTransferred
+              - event: RoundPlayed(indexed uint256,uint8,uint8,bytes,bool,uint256)
+                handler: handleRoundPlayed
+          file: ./src/mapping.ts

@@ -1,0 +1,67 @@
+type Game @entity {
+  id: ID!
+  player: Player!
+  wager: BigInt!
+  payout: BigInt
+  status: GameStatus!
+  rounds: [Round!]! @derivedFrom(field: "game")
+  startedAt: BigInt!
+  endedAt: BigInt
+  startedAtBlock: BigInt!
+  endedAtBlock: BigInt
+  transactionHash: Bytes!
+}
+
+type Player @entity {
+  id: ID!
+  totalWagered: BigInt!
+  totalPayout: BigInt!
+  totalGames: BigInt!
+  games: [Game!]! @derivedFrom(field: "player")
+  firstPlayedAt: BigInt!
+  lastPlayedAt: BigInt!
+}
+
+type Round @entity {
+  id: ID!
+  game: Game!
+  roundIndex: Int!
+  roundOutcome: Int!
+  cards: Bytes!
+  isDoubleDown: Boolean!
+  multiplier: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type House @entity {
+  id: ID!
+  totalFunded: BigInt!
+  totalWithdrawn: BigInt!
+  balance: BigInt!
+  owner: Bytes!
+  fundingEvents: [HouseFunding!]! @derivedFrom(field: "house")
+  withdrawalEvents: [HouseWithdrawal!]! @derivedFrom(field: "house")
+}
+
+type HouseFunding @entity {
+  id: ID!
+  house: House!
+  amount: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HouseWithdrawal @entity {
+  id: ID!
+  house: House!
+  amount: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+enum GameStatus {
+  ACTIVE
+  CASHED_OUT
+  BUSTED
+}
