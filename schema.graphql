@@ -1,6 +1,7 @@
 type Game @entity {
   id: ID!
   player: Player!
+  playerGameIndex: BigInt!
   wager: BigInt!
   payout: BigInt
   status: GameStatus!

@@ -45,6 +45,7 @@ export function handleGameStarted(ev: GameStartedEvent): void {
 	player.save();
 
 	game.player = player.id;
+	game.playerGameIndex = player.totalGames;
 	game.wager = ev.params.wager;
 	game.status = "ACTIVE";
 	game.startedAt = ev.block.timestamp;
