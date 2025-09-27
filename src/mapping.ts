@@ -82,9 +82,9 @@ export function handleBusted(ev: BustedEvent): void {
 	game.save();
 }
 
-function cardToString(cardValue: number): string {
+function cardToString(cardValue: i32): string {
 	let rank = cardValue % 13;
-	let suit = Math.floor(cardValue / 13);
+	let suit = cardValue / 13;
 
 	let rankStr: string;
 	if (rank == 0) rankStr = "A";

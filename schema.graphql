@@ -6,8 +6,8 @@ type Game @entity {
   payout: BigInt
   status: GameStatus!
   rounds: [Round!]! @derivedFrom(field: "game")
-  startedAt: Timestamp!
-  endedAt: Timestamp
+  startedAt: BigInt!
+  endedAt: BigInt
   startedAtBlock: BigInt!
   endedAtBlock: BigInt
   transactionHash: Bytes!
@@ -19,8 +19,8 @@ type Player @entity {
   totalPayout: BigInt!
   totalGames: BigInt!
   games: [Game!]! @derivedFrom(field: "player")
-  firstPlayedAt: Timestamp!
-  lastPlayedAt: Timestamp!
+  firstPlayedAt: BigInt!
+  lastPlayedAt: BigInt!
 }
 
 type Round @entity {
@@ -31,7 +31,7 @@ type Round @entity {
   cards: Bytes!
   isDoubleDown: Boolean!
   multiplier: BigInt!
-  timestamp: Timestamp!
+  timestamp: BigInt!
   transactionHash: Bytes!
 }
 
@@ -49,7 +49,7 @@ type HouseFunding @entity {
   id: ID!
   house: House!
   amount: BigInt!
-  timestamp: Timestamp!
+  timestamp: BigInt!
   transactionHash: Bytes!
 }
 
@@ -57,7 +57,7 @@ type HouseWithdrawal @entity {
   id: ID!
   house: House!
   amount: BigInt!
-  timestamp: Timestamp!
+  timestamp: BigInt!
   transactionHash: Bytes!
 }
 
