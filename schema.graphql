@@ -27,7 +27,7 @@ type Round @entity {
   id: ID!
   game: Game!
   roundIndex: Int!
-  roundOutcome: Int!
+  roundOutcome: String!
   cards: Bytes!
   isDoubleDown: Boolean!
   multiplier: BigInt!

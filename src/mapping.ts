@@ -82,16 +82,36 @@ export function handleBusted(ev: BustedEvent): void {
 	game.save();
 }
 
+function cardToString(cardValue: number): string {
+	let rank = cardValue % 13;
+	let suit = Math.floor(cardValue / 13);
+
+	let rankStr: string;
+	if (rank == 0) rankStr = "A";
+	else if (rank == 10) rankStr = "J";
+	else if (rank == 11) rankStr = "Q";
+	else if (rank == 12) rankStr = "K";
+	else rankStr = (rank + 1).toString();
+
+	let suitStr: string;
+	if (suit == 0) suitStr = "H";
+	else if (suit == 1) suitStr = "D";
+	else if (suit == 2) suitStr = "S";
+	else suitStr = "C";
+
+	return rankStr + suitStr;
+}
+
 export function handleRoundPlayed(ev: RoundPlayedEvent): void {
 	let roundId = ev.params.gameId.toString() + "-" + ev.params.roundIndex.toString();
 	let round = new Round(roundId);
 
 	round.game = ev.params.gameId.toString();
 	round.roundIndex = ev.params.roundIndex;
-	round.roundOutcome = ev.params.card;  // Using card as round outcome
-	round.cards = ev.params.extra;  // Using extra bytes as cards data
-	round.isDoubleDown = ev.params.win;  // Using win as a placeholder for double down
-	round.multiplier = ev.params.newPayout;  // Using newPayout as multiplier
+	round.roundOutcome = cardToString(ev.params.card);
+	round.cards = ev.params.extra;
+	round.isDoubleDown = ev.params.win;
+	round.multiplier = ev.params.newPayout;
 	round.timestamp = ev.block.timestamp;
 	round.transactionHash = ev.transaction.hash;
 	round.save();

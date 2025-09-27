@@ -1,71 +1,31 @@
-# POAP Subgraph
+ Ranks (0-12):
+ - 0: A (Ace)
+ - 1: 2
+ - 2: 3
+ - 3: 4
+ - 4: 5
+ - 5: 6
+ - 6: 7
+ - 7: 8
+ - 8: 9
+ - 9: 10
+ - 10: J (Jack)
+ - 11: Q (Queen)
+ - 12: K (King)
 
-This Subgraph sources events from the POAP contract in different networks. It has been forked from [the original](https://github.com/poap-xyz/poap-subgraph) to demonstrate uses on Goldsky.
+ Suits (card / 13):
+ - 0: ♥ (Hearts)
+ - 1: ♦ (Diamonds)
+ - 2: ♠ (Spades)
+ - 3: ♣ (Clubs)
 
-## Deploying the subgraph:
+ Full mapping (card value → string):
+ 0: A♥, 1: 2♥, 2: 3♥, 3: 4♥, 4: 5♥, 5: 6♥, 6: 7♥, 7: 8♥, 8: 9♥, 9: 10♥,
+ 10: J♥, 11: Q♥, 12: K♥
+ 13: A♦, 14: 2♦, 15: 3♦, 16: 4♦, 17: 5♦, 18: 6♦, 19: 7♦, 20: 8♦, 21: 9♦,
+ 22: 10♦, 23: J♦, 24: Q♦, 25: K♦
+ 26: A♠, 27: 2♠, 28: 3♠, 29: 4♠, 30: 5♠, 31: 6♠, 32: 7♠, 33: 8♠, 34: 9♠,
+ 35: 10♠, 36: J♠, 37: Q♠, 38: K♠
+ 39: A♣, 40: 2♣, 41: 3♣, 42: 4♣, 43: 5♣, 44: 6♣, 45: 7♣, 46: 8♣, 47: 9♣,
+ 48: 10♣, 49: J♣, 50: Q♣, 51: K♣
 
-**First time only**
-```ssh
-yarn install
-```
-
-Available networks: mainnet, xdai, chiado, goerli
-
-**Chiado deployment**
-
-Chiado is not index by The Graph so we use Goldsky
-
-First run:
-
-```ssh
-goldsky login
-```
-
-If you already have an existing Chiado subgraph you will have to delete it to deploy the new one
-
-**Deploy** 
-
-```
---product hosted-service --access-token {TOKEN} 
-```
-as extra parameters just after "graph deploy" in the package json and then execute the following:
-
-```ssh
-yarn prepare:<network>
-yarn codegen
-yarn build
-yarn deploy:<network>
-```
-
-**Good practices**
-A good practice to deploy in mainnet or xdai is to have a duplicate/backup subgraph so that if something goes wrong, the traffic can be redirected to the duplicate subgraph instead of having to wait for the subgraph to re-deploy/rollback to a previous version. In Xdai/Gnosis it can take at least 2 days to sync.
-
-To build a duplicate, you need to create a new subgraph through the-graph profile. Once the new path is provided you can use the next curl to deploy a duplicate WITHOUT NEEDING to resync all over again just by copying the ID of the subgraph you are trying to duplicate.
-
-```ssh
-curl -H "content-type: application/json" -H "authorization: Bearer {TOKEN}" --data '{"jsonrpc": "2.0", "method": "subgraph_deploy", "params": { "name": "poap-xyz/{duplicate_subgraph_path}", "ipfs_hash": "{ID_HASH_FOUND_IN_THE_ORIGINAL_SUBGRAPH}"}, "id": "1"}' https://api.thegraph.com/deploy/
-```
-
-## Deployments
-
-### Mainnet
-Endpoint: [https://api.thegraph.com/subgraphs/name/poap-xyz/poap](https://api.thegraph.com/subgraphs/name/poap-xyz/poap) \
-Subgraph page: [https://thegraph.com/explorer/subgraph/poap-xyz/poap](https://thegraph.com/explorer/subgraph/poap-xyz/poap)
-
-### XDai
-Endpoint: [https://api.thegraph.com/subgraphs/name/poap-xyz/poap-xdai](https://api.thegraph.com/subgraphs/name/poap-xyz/poap-xdai) \
-Subgraph page: [https://thegraph.com/explorer/subgraph/poap-xyz/poap-xdai](https://thegraph.com/explorer/subgraph/poap-xyz/poap-xdai)
-
-
-### Chiado
-Endpoint: [https://api.goldsky.com/api/public/project_clcquosqr8v0k0iwk5rs87x2l/subgraphs/poap-xyz/poap-chiado/gn](https://api.goldsky.com/api/public/project_clcquosqr8v0k0iwk5rs87x2l/subgraphs/poap-xyz/poap-chiado/gn) \
-Subgraph page: [https://api.goldsky.com/api/public/project_clcquosqr8v0k0iwk5rs87x2l/subgraphs/poap-xyz/poap-chiado/gn](https://api.goldsky.com/api/public/project_clcquosqr8v0k0iwk5rs87x2l/subgraphs/poap-xyz/poap-chiado/gn) 
-
-### Goerli
-Endpoint: [https://api.thegraph.com/subgraphs/name/poap-xyz/poap-goerli](https://api.thegraph.com/subgraphs/name/poap-xyz/poap-goerli) \
-Subgraph page: [https://thegraph.com/hosted-service/subgraph/poap-xyz/poap-goerli](https://thegraph.com/hosted-service/subgraph/poap-xyz/poap-goerli)
-
-## Notes
-
-### Sokol
-Previously none of the params of EventToken was indexed, due to a change in the ABI, newer events now have one of the params indexed and this may cause some issues with the-graph having to deal with malformed or missing entities for older tokens.
