@@ -1,4 +1,80 @@
-type Swap @entity {
+interface SwapInterface {
+  id: ID!
+  uniquePID: Bytes!
+  user: User!
+  userAddress: Bytes!
+  outputReceiver: Bytes!
+  inputToken: Bytes!
+  inputAmount: BigInt!
+  outputToken: Bytes!
+  finalOutputAmount: BigInt!
+  partnerFee: BigInt!
+  routingFee: BigInt!
+  partnerShare: BigInt!
+  protocolShare: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Swap implements SwapInterface @entity {
+  id: ID!
+  uniquePID: Bytes!
+  user: User!
+  userAddress: Bytes!
+  outputReceiver: Bytes!
+  inputToken: Bytes!
+  inputAmount: BigInt!
+  outputToken: Bytes!
+  finalOutputAmount: BigInt!
+  partnerFee: BigInt!
+  routingFee: BigInt!
+  partnerShare: BigInt!
+  protocolShare: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type LendSwap implements SwapInterface @entity {
+  id: ID!
+  uniquePID: Bytes!
+  user: User!
+  userAddress: Bytes!
+  outputReceiver: Bytes!
+  inputToken: Bytes!
+  inputAmount: BigInt!
+  outputToken: Bytes!
+  finalOutputAmount: BigInt!
+  partnerFee: BigInt!
+  routingFee: BigInt!
+  partnerShare: BigInt!
+  protocolShare: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type InvestSwap implements SwapInterface @entity {
+  id: ID!
+  uniquePID: Bytes!
+  user: User!
+  userAddress: Bytes!
+  outputReceiver: Bytes!
+  inputToken: Bytes!
+  inputAmount: BigInt!
+  outputToken: Bytes!
+  finalOutputAmount: BigInt!
+  partnerFee: BigInt!
+  routingFee: BigInt!
+  partnerShare: BigInt!
+  protocolShare: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type LPSwap implements SwapInterface @entity {
   id: ID!
   uniquePID: Bytes!
   user: User!
@@ -50,7 +126,7 @@ type User @entity {
   totalSwaps: BigInt!
   firstSwapAt: BigInt!
   lastSwapAt: BigInt!
-  swaps: [Swap!]! @derivedFrom(field: "user")
+  swaps: [SwapInterface!]! @derivedFrom(field: "user")
   tokenVolumes: [UserTokenVolume!]! @derivedFrom(field: "user")
 }
 

@@ -9,7 +9,16 @@ import {
 } from '../generated/GluexRouter/GluexRouter'
 
 import {
+	LEND_TOKENS,
+	INVEST_TOKENS,
+	LP_TOKENS
+} from './tokens'
+
+import {
 	Swap,
+	LendSwap,
+	InvestSwap,
+	LPSwap,
 	DailyVolume,
 	TotalVolume,
 	GlobalTokenVolume,
@@ -40,6 +49,105 @@ function getDailyVolumeID(timestamp: BigInt, token: Bytes): string {
 	return day.concat('-').concat(token.toHexString().toLowerCase())
 }
 
+function getTokenType(inputToken: string, outputToken: string): string {
+	// Check if either input or output token is in the categorized lists
+	if (LEND_TOKENS.includes(inputToken) || LEND_TOKENS.includes(outputToken)) {
+		return 'lend'
+	}
+	if (INVEST_TOKENS.includes(inputToken) || INVEST_TOKENS.includes(outputToken)) {
+		return 'invest'
+	}
+	if (LP_TOKENS.includes(inputToken) || LP_TOKENS.includes(outputToken)) {
+		return 'lp'
+	}
+	return 'swap'
+}
+
+function createSwapEntity(
+	id: string,
+	event: RoutedEvent,
+	userAddressLower: string,
+	userId: string
+): void {
+	let inputTokenLower = event.params.inputToken.toHexString().toLowerCase()
+	let outputTokenLower = event.params.outputToken.toHexString().toLowerCase()
+	let tokenType = getTokenType(inputTokenLower, outputTokenLower)
+
+	if (tokenType == 'lend') {
+		let swap = new LendSwap(id)
+		swap.uniquePID = event.params.uniquePID
+		swap.user = userId
+		swap.userAddress = Bytes.fromHexString(userAddressLower)
+		swap.outputReceiver = Bytes.fromHexString(event.params.outputReceiver.toHexString().toLowerCase())
+		swap.inputToken = Bytes.fromHexString(inputTokenLower)
+		swap.inputAmount = event.params.inputAmount
+		swap.outputToken = Bytes.fromHexString(outputTokenLower)
+		swap.finalOutputAmount = event.params.finalOutputAmount
+		swap.partnerFee = event.params.partnerFee
+		swap.routingFee = event.params.routingFee
+		swap.partnerShare = event.params.partnerShare
+		swap.protocolShare = event.params.protocolShare
+		swap.timestamp = event.block.timestamp
+		swap.blockNumber = event.block.number
+		swap.transactionHash = event.transaction.hash
+		swap.save()
+	} else if (tokenType == 'invest') {
+		let swap = new InvestSwap(id)
+		swap.uniquePID = event.params.uniquePID
+		swap.user = userId
+		swap.userAddress = Bytes.fromHexString(userAddressLower)
+		swap.outputReceiver = Bytes.fromHexString(event.params.outputReceiver.toHexString().toLowerCase())
+		swap.inputToken = Bytes.fromHexString(inputTokenLower)
+		swap.inputAmount = event.params.inputAmount
+		swap.outputToken = Bytes.fromHexString(outputTokenLower)
+		swap.finalOutputAmount = event.params.finalOutputAmount
+		swap.partnerFee = event.params.partnerFee
+		swap.routingFee = event.params.routingFee
+		swap.partnerShare = event.params.partnerShare
+		swap.protocolShare = event.params.protocolShare
+		swap.timestamp = event.block.timestamp
+		swap.blockNumber = event.block.number
+		swap.transactionHash = event.transaction.hash
+		swap.save()
+	} else if (tokenType == 'lp') {
+		let swap = new LPSwap(id)
+		swap.uniquePID = event.params.uniquePID
+		swap.user = userId
+		swap.userAddress = Bytes.fromHexString(userAddressLower)
+		swap.outputReceiver = Bytes.fromHexString(event.params.outputReceiver.toHexString().toLowerCase())
+		swap.inputToken = Bytes.fromHexString(inputTokenLower)
+		swap.inputAmount = event.params.inputAmount
+		swap.outputToken = Bytes.fromHexString(outputTokenLower)
+		swap.finalOutputAmount = event.params.finalOutputAmount
+		swap.partnerFee = event.params.partnerFee
+		swap.routingFee = event.params.routingFee
+		swap.partnerShare = event.params.partnerShare
+		swap.protocolShare = event.params.protocolShare
+		swap.timestamp = event.block.timestamp
+		swap.blockNumber = event.block.number
+		swap.transactionHash = event.transaction.hash
+		swap.save()
+	} else {
+		let swap = new Swap(id)
+		swap.uniquePID = event.params.uniquePID
+		swap.user = userId
+		swap.userAddress = Bytes.fromHexString(userAddressLower)
+		swap.outputReceiver = Bytes.fromHexString(event.params.outputReceiver.toHexString().toLowerCase())
+		swap.inputToken = Bytes.fromHexString(inputTokenLower)
+		swap.inputAmount = event.params.inputAmount
+		swap.outputToken = Bytes.fromHexString(outputTokenLower)
+		swap.finalOutputAmount = event.params.finalOutputAmount
+		swap.partnerFee = event.params.partnerFee
+		swap.routingFee = event.params.routingFee
+		swap.partnerShare = event.params.partnerShare
+		swap.protocolShare = event.params.protocolShare
+		swap.timestamp = event.block.timestamp
+		swap.blockNumber = event.block.number
+		swap.transactionHash = event.transaction.hash
+		swap.save()
+	}
+}
+
 export function handleRouted(event: RoutedEvent): void {
 	// Normalize all addresses to lowercase for case-insensitive lookups
 	let userAddressLower = event.params.userAddress.toHexString().toLowerCase()
@@ -55,24 +163,8 @@ export function handleRouted(event: RoutedEvent): void {
 	user.lastSwapAt = event.block.timestamp
 	user.save()
 
-	// Create Swap entity with lowercase addresses for consistency
-	let swap = new Swap(createEventID(event))
-	swap.uniquePID = event.params.uniquePID
-	swap.user = user.id
-	swap.userAddress = Bytes.fromHexString(userAddressLower)
-	swap.outputReceiver = Bytes.fromHexString(event.params.outputReceiver.toHexString().toLowerCase())
-	swap.inputToken = Bytes.fromHexString(event.params.inputToken.toHexString().toLowerCase())
-	swap.inputAmount = event.params.inputAmount
-	swap.outputToken = Bytes.fromHexString(event.params.outputToken.toHexString().toLowerCase())
-	swap.finalOutputAmount = event.params.finalOutputAmount
-	swap.partnerFee = event.params.partnerFee
-	swap.routingFee = event.params.routingFee
-	swap.partnerShare = event.params.partnerShare
-	swap.protocolShare = event.params.protocolShare
-	swap.timestamp = event.block.timestamp
-	swap.blockNumber = event.block.number
-	swap.transactionHash = event.transaction.hash
-	swap.save()
+	// Create appropriate swap entity based on token type
+	createSwapEntity(createEventID(event), event, userAddressLower, user.id)
 
 	// Update UserTokenVolume for input token only
 	let inputTokenLower = event.params.inputToken.toHexString().toLowerCase()
