@@ -1,6 +1,6 @@
 {
   "name": "@subgraphs/gluex",
-  "version": "1.0.7",
+  "version": "2.0.0",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",

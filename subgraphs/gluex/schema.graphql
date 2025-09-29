@@ -127,6 +127,10 @@ type User @entity {
   firstSwapAt: BigInt!
   lastSwapAt: BigInt!
   swaps: [SwapInterface!]! @derivedFrom(field: "user")
+  defaultSwaps: [Swap!]! @derivedFrom(field: "user")
+  lendSwaps: [LendSwap!]! @derivedFrom(field: "user")
+  investSwaps: [InvestSwap!]! @derivedFrom(field: "user")
+  lpSwaps: [LPSwap!]! @derivedFrom(field: "user")
   tokenVolumes: [UserTokenVolume!]! @derivedFrom(field: "user")
 }
 
