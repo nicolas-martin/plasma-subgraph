@@ -1,4 +1,4 @@
-specVersion: 0.0.5
+specVersion: 0.0.1
 schema:
     file: ./schema.graphql
 dataSources:
@@ -27,4 +27,3 @@ dataSources:
               - event: Routed(indexed bytes32,indexed address,address,address,uint256,address,uint256,uint256,uint256,uint256,uint256)
                 handler: handleRouted
           file: ./src/mapping.ts
-
