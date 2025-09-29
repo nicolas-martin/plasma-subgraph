@@ -32,13 +32,39 @@ type TotalVolume @entity {
   totalSwapCount: BigInt!
 }
 
+type GlobalTokenVolume @entity {
+  id: ID! # token address
+  token: Bytes!
+  totalVolumeIn: BigInt! # Total volume as input token
+  totalVolumeOut: BigInt! # Total volume as output token
+  totalVolume: BigInt! # Combined total (in + out)
+  totalSwapsAsInput: BigInt!
+  totalSwapsAsOutput: BigInt!
+  totalSwaps: BigInt! # Total times used (input + output)
+  uniqueUsers: BigInt! # Number of unique users who traded this token
+  lastUpdated: BigInt!
+}
+
 type User @entity {
   id: ID! # user address
   totalSwaps: BigInt!
-  totalVolumeUSD: BigDecimal!
+  totalInputVolume: BigInt! # Total volume of all input tokens
+  totalOutputVolume: BigInt! # Total volume of all output tokens
   firstSwapAt: BigInt!
   lastSwapAt: BigInt!
   swaps: [Swap!]! @derivedFrom(field: "user")
+  tokenBalances: [UserTokenBalance!]! @derivedFrom(field: "user")
+}
+
+type UserTokenBalance @entity {
+  id: ID! # user-token
+  user: User!
+  token: Bytes!
+  totalInput: BigInt!
+  totalOutput: BigInt!
+  netAmount: BigInt! # output - input (can be negative)
+  swapCount: BigInt!
+  lastUpdated: BigInt!
 }
 
 type FeeCollected @entity {
@@ -53,7 +79,6 @@ type FeeCollected @entity {
 type Protocol @entity {
   id: ID! # "protocol"
   totalSwaps: BigInt!
-  totalVolumeUSD: BigDecimal!
   totalPartnerFees: BigInt!
   totalRoutingFees: BigInt!
   totalProtocolShare: BigInt!

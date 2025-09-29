@@ -1,10 +1,10 @@
-specVersion: 0.0.1
+specVersion: 0.0.4
 schema:
     file: ./schema.graphql
 dataSources:
     - kind: ethereum
       name: GluexRouter
-      network: mainnet
+      network: plasma-mainnet
       source:
           address: "0xe95F6EAeaE1E4d650576Af600b33D9F7e5f9f7fd"
           abi: GluexRouter
