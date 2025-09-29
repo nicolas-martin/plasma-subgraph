@@ -11,7 +11,8 @@ import {
 import {
 	LEND_TOKENS,
 	INVEST_TOKENS,
-	LP_TOKENS
+	LP_TOKENS,
+	ALL_TOKENS
 } from './tokens'
 
 import {
@@ -25,7 +26,9 @@ import {
 	User,
 	UserTokenVolume,
 	Protocol,
-	ProtocolTokenVolume
+	ProtocolTokenVolume,
+	Token,
+	TokenAmount
 } from '../generated/schema'
 
 const PROTOCOL_ID = "protocol"
@@ -44,23 +47,57 @@ function getDayID(timestamp: BigInt): string {
 	return day.toString()
 }
 
-function getDailyVolumeID(timestamp: BigInt, token: Bytes): string {
+function getDailyVolumeID(timestamp: BigInt, tokenAddress: string): string {
 	let day = getDayID(timestamp)
-	return day.concat('-').concat(token.toHexString().toLowerCase())
+	return day.concat('-').concat(tokenAddress)
+}
+
+function getOrCreateToken(tokenAddress: string): Token {
+	let token = Token.load(tokenAddress)
+	if (token == null) {
+		token = new Token(tokenAddress)
+
+		// Try to find token data in our dictionaries
+		let tokenData = ALL_TOKENS[tokenAddress]
+		if (tokenData) {
+			token.symbol = tokenData.symbol
+			token.name = tokenData.name
+			token.type = tokenData.type
+			token.decimals = BigInt.fromString(tokenData.decimals).toI32()
+		} else {
+			// Default values if token is not in our dictionary
+			token.symbol = "UNKNOWN"
+			token.name = "Unknown Token"
+			token.type = "SWAP"
+			token.decimals = 18
+		}
+
+		token.save()
+	}
+	return token
 }
 
 function getTokenType(inputToken: string, outputToken: string): string {
 	// Check if either input or output token is in the categorized lists
-	if (LEND_TOKENS.includes(inputToken) || LEND_TOKENS.includes(outputToken)) {
+	if (LEND_TOKENS[inputToken] || LEND_TOKENS[outputToken]) {
 		return "LEND"
 	}
-	if (INVEST_TOKENS.includes(inputToken) || INVEST_TOKENS.includes(outputToken)) {
+	if (INVEST_TOKENS[inputToken] || INVEST_TOKENS[outputToken]) {
 		return "INVEST"
 	}
-	if (LP_TOKENS.includes(inputToken) || LP_TOKENS.includes(outputToken)) {
+	if (LP_TOKENS[inputToken] || LP_TOKENS[outputToken]) {
 		return "LP"
 	}
-	return "DEFAULT"
+	return "SWAP"
+}
+
+function createTokenAmount(swapId: string, suffix: string, tokenAddress: string, amount: BigInt): TokenAmount {
+	let tokenAmountId = swapId.concat('-').concat(suffix)
+	let tokenAmount = new TokenAmount(tokenAmountId)
+	tokenAmount.token = tokenAddress
+	tokenAmount.amount = amount
+	tokenAmount.save()
+	return tokenAmount
 }
 
 function createSwapEntity(
@@ -73,6 +110,14 @@ function createSwapEntity(
 	let outputTokenLower = event.params.outputToken.toHexString().toLowerCase()
 	let tokenType = getTokenType(inputTokenLower, outputTokenLower)
 
+	// Ensure tokens exist
+	getOrCreateToken(inputTokenLower)
+	getOrCreateToken(outputTokenLower)
+
+	// Create TokenAmount entities
+	let inputTokenAmount = createTokenAmount(id, "input", inputTokenLower, event.params.inputAmount)
+	let outputTokenAmount = createTokenAmount(id, "output", outputTokenLower, event.params.finalOutputAmount)
+
 	if (tokenType == "LEND") {
 		let swap = new LendSwap(id)
 		swap.type = "LEND"
@@ -80,10 +125,8 @@ function createSwapEntity(
 		swap.user = userId
 		swap.userAddress = Bytes.fromHexString(userAddressLower)
 		swap.outputReceiver = Bytes.fromHexString(event.params.outputReceiver.toHexString().toLowerCase())
-		swap.inputToken = Bytes.fromHexString(inputTokenLower)
-		swap.inputAmount = event.params.inputAmount
-		swap.outputToken = Bytes.fromHexString(outputTokenLower)
-		swap.finalOutputAmount = event.params.finalOutputAmount
+		swap.input = inputTokenAmount.id
+		swap.output = outputTokenAmount.id
 		swap.partnerFee = event.params.partnerFee
 		swap.routingFee = event.params.routingFee
 		swap.partnerShare = event.params.partnerShare
@@ -99,10 +142,8 @@ function createSwapEntity(
 		swap.user = userId
 		swap.userAddress = Bytes.fromHexString(userAddressLower)
 		swap.outputReceiver = Bytes.fromHexString(event.params.outputReceiver.toHexString().toLowerCase())
-		swap.inputToken = Bytes.fromHexString(inputTokenLower)
-		swap.inputAmount = event.params.inputAmount
-		swap.outputToken = Bytes.fromHexString(outputTokenLower)
-		swap.finalOutputAmount = event.params.finalOutputAmount
+		swap.input = inputTokenAmount.id
+		swap.output = outputTokenAmount.id
 		swap.partnerFee = event.params.partnerFee
 		swap.routingFee = event.params.routingFee
 		swap.partnerShare = event.params.partnerShare
@@ -118,10 +159,8 @@ function createSwapEntity(
 		swap.user = userId
 		swap.userAddress = Bytes.fromHexString(userAddressLower)
 		swap.outputReceiver = Bytes.fromHexString(event.params.outputReceiver.toHexString().toLowerCase())
-		swap.inputToken = Bytes.fromHexString(inputTokenLower)
-		swap.inputAmount = event.params.inputAmount
-		swap.outputToken = Bytes.fromHexString(outputTokenLower)
-		swap.finalOutputAmount = event.params.finalOutputAmount
+		swap.input = inputTokenAmount.id
+		swap.output = outputTokenAmount.id
 		swap.partnerFee = event.params.partnerFee
 		swap.routingFee = event.params.routingFee
 		swap.partnerShare = event.params.partnerShare
@@ -132,15 +171,13 @@ function createSwapEntity(
 		swap.save()
 	} else {
 		let swap = new Swap(id)
-		swap.type = "DEFAULT"
+		swap.type = "SWAP"
 		swap.uniquePID = event.params.uniquePID
 		swap.user = userId
 		swap.userAddress = Bytes.fromHexString(userAddressLower)
 		swap.outputReceiver = Bytes.fromHexString(event.params.outputReceiver.toHexString().toLowerCase())
-		swap.inputToken = Bytes.fromHexString(inputTokenLower)
-		swap.inputAmount = event.params.inputAmount
-		swap.outputToken = Bytes.fromHexString(outputTokenLower)
-		swap.finalOutputAmount = event.params.finalOutputAmount
+		swap.input = inputTokenAmount.id
+		swap.output = outputTokenAmount.id
 		swap.partnerFee = event.params.partnerFee
 		swap.routingFee = event.params.routingFee
 		swap.partnerShare = event.params.partnerShare
@@ -167,18 +204,21 @@ export function handleRouted(event: RoutedEvent): void {
 	user.lastSwapAt = event.block.timestamp
 	user.save()
 
+	// Get token addresses
+	let inputTokenLower = event.params.inputToken.toHexString().toLowerCase()
+	let outputTokenLower = event.params.outputToken.toHexString().toLowerCase()
+
 	// Create appropriate swap entity based on token type
 	createSwapEntity(createEventID(event), event, userAddressLower, user.id)
 
 	// Update UserTokenVolume for input token only
-	let inputTokenLower = event.params.inputToken.toHexString().toLowerCase()
 	let inputVolumeId = userAddressLower.concat('-').concat(inputTokenLower)
 	let inputVolume = UserTokenVolume.load(inputVolumeId)
 	let isNewInputTokenUser = false
 	if (inputVolume == null) {
 		inputVolume = new UserTokenVolume(inputVolumeId)
 		inputVolume.user = user.id
-		inputVolume.token = Bytes.fromHexString(inputTokenLower)
+		inputVolume.token = inputTokenLower
 		inputVolume.totalVolume = ZERO_BI
 		inputVolume.swapCount = ZERO_BI
 		isNewInputTokenUser = true
@@ -188,7 +228,6 @@ export function handleRouted(event: RoutedEvent): void {
 	inputVolume.lastUpdated = event.block.timestamp
 	inputVolume.save()
 
-	let outputTokenLower = event.params.outputToken.toHexString().toLowerCase()
 	let isNewOutputTokenUser = false
 	// Check if output token volume exists for unique user tracking
 	let outputVolumeId = userAddressLower.concat('-').concat(outputTokenLower)
@@ -198,13 +237,12 @@ export function handleRouted(event: RoutedEvent): void {
 	}
 
 	// Update DailyVolume for input token
-	let inputTokenBytes = Bytes.fromHexString(inputTokenLower)
-	let inputDailyVolumeID = getDailyVolumeID(event.block.timestamp, inputTokenBytes)
+	let inputDailyVolumeID = getDailyVolumeID(event.block.timestamp, inputTokenLower)
 	let inputDailyVolume = DailyVolume.load(inputDailyVolumeID)
 	if (inputDailyVolume == null) {
 		inputDailyVolume = new DailyVolume(inputDailyVolumeID)
 		inputDailyVolume.date = event.block.timestamp.div(SECONDS_PER_DAY).times(SECONDS_PER_DAY)
-		inputDailyVolume.token = inputTokenBytes
+		inputDailyVolume.token = inputTokenLower
 		inputDailyVolume.volume = ZERO_BI
 		inputDailyVolume.swapCount = ZERO_BI
 	}
@@ -213,13 +251,12 @@ export function handleRouted(event: RoutedEvent): void {
 	inputDailyVolume.save()
 
 	// Update DailyVolume for output token
-	let outputTokenBytes = Bytes.fromHexString(outputTokenLower)
-	let outputDailyVolumeID = getDailyVolumeID(event.block.timestamp, outputTokenBytes)
+	let outputDailyVolumeID = getDailyVolumeID(event.block.timestamp, outputTokenLower)
 	let outputDailyVolume = DailyVolume.load(outputDailyVolumeID)
 	if (outputDailyVolume == null) {
 		outputDailyVolume = new DailyVolume(outputDailyVolumeID)
 		outputDailyVolume.date = event.block.timestamp.div(SECONDS_PER_DAY).times(SECONDS_PER_DAY)
-		outputDailyVolume.token = outputTokenBytes
+		outputDailyVolume.token = outputTokenLower
 		outputDailyVolume.volume = ZERO_BI
 		outputDailyVolume.swapCount = ZERO_BI
 	}
@@ -231,7 +268,7 @@ export function handleRouted(event: RoutedEvent): void {
 	let inputTotalVolume = TotalVolume.load(inputTokenLower)
 	if (inputTotalVolume == null) {
 		inputTotalVolume = new TotalVolume(inputTokenLower)
-		inputTotalVolume.token = inputTokenBytes
+		inputTotalVolume.token = inputTokenLower
 		inputTotalVolume.totalVolume = ZERO_BI
 		inputTotalVolume.totalSwapCount = ZERO_BI
 	}
@@ -243,7 +280,7 @@ export function handleRouted(event: RoutedEvent): void {
 	let outputTotalVolume = TotalVolume.load(outputTokenLower)
 	if (outputTotalVolume == null) {
 		outputTotalVolume = new TotalVolume(outputTokenLower)
-		outputTotalVolume.token = outputTokenBytes
+		outputTotalVolume.token = outputTokenLower
 		outputTotalVolume.totalVolume = ZERO_BI
 		outputTotalVolume.totalSwapCount = ZERO_BI
 	}
@@ -255,7 +292,7 @@ export function handleRouted(event: RoutedEvent): void {
 	let inputGlobalVolume = GlobalTokenVolume.load(inputTokenLower)
 	if (inputGlobalVolume == null) {
 		inputGlobalVolume = new GlobalTokenVolume(inputTokenLower)
-		inputGlobalVolume.token = inputTokenBytes
+		inputGlobalVolume.token = inputTokenLower
 		inputGlobalVolume.totalVolumeIn = ZERO_BI
 		inputGlobalVolume.totalVolumeOut = ZERO_BI
 		inputGlobalVolume.totalVolume = ZERO_BI
@@ -278,7 +315,7 @@ export function handleRouted(event: RoutedEvent): void {
 	let outputGlobalVolume = GlobalTokenVolume.load(outputTokenLower)
 	if (outputGlobalVolume == null) {
 		outputGlobalVolume = new GlobalTokenVolume(outputTokenLower)
-		outputGlobalVolume.token = outputTokenBytes
+		outputGlobalVolume.token = outputTokenLower
 		outputGlobalVolume.totalVolumeIn = ZERO_BI
 		outputGlobalVolume.totalVolumeOut = ZERO_BI
 		outputGlobalVolume.totalVolume = ZERO_BI
@@ -326,7 +363,7 @@ export function handleRouted(event: RoutedEvent): void {
 	if (inputProtocolVolume == null) {
 		inputProtocolVolume = new ProtocolTokenVolume(inputTokenLower)
 		inputProtocolVolume.protocol = PROTOCOL_ID
-		inputProtocolVolume.token = Bytes.fromHexString(inputTokenLower)
+		inputProtocolVolume.token = inputTokenLower
 		inputProtocolVolume.totalVolume = ZERO_BI
 		inputProtocolVolume.swapCount = ZERO_BI
 	}
