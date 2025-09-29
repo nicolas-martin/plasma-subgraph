@@ -1,14 +1,21 @@
 {
-  "name": "poap-mainnet-subgraph",
-  "license": "UNLICENSED",
+  "name": "subgraphs-workspace",
+  "private": true,
+  "workspaces": [
+    "subgraphs/*"
+  ],
   "scripts": {
-    "codegen": "graph codegen",
-    "build": "graph build",
-    "prepare:testnet": "mustache config/testnet.json subgraph.template.yaml > subgraph.yaml",
-    "deploy:testnet": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ poap-xyz/poap",
-    "create-local": "graph create --node http://localhost:8020/ poap-xyz/poap",
-    "remove-local": "graph remove --node http://localhost:8020/ poap-xyz/poap",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 poap-xyz/poap"
+    "rtb:codegen": "cd subgraphs/rtb && npm run codegen",
+    "rtb:build": "cd subgraphs/rtb && npm run build",
+    "rtb:deploy": "cd subgraphs/rtb && npm run deploy",
+    "rtb:test": "cd subgraphs/rtb && npm run test",
+    "gluex:codegen": "cd subgraphs/gluex && npm run codegen",
+    "gluex:build": "cd subgraphs/gluex && npm run build",
+    "gluex:deploy": "cd subgraphs/gluex && npm run deploy",
+    "gluex:test": "cd subgraphs/gluex && npm run test",
+    "codegen": "npm run codegen --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.51.0",
@@ -16,6 +23,5 @@
   },
   "devDependencies": {
     "mustache": "^4.0.1"
-  },
-  "packageManager": "yarn@4.9.2+sha512.1fc009bc09d13cfd0e19efa44cbfc2b9cf6ca61482725eb35bbc5e257e093ebf4130db6dfe15d604ff4b79efd8e1e8e99b25fa7d0a6197c9f9826358d4d65c3c"
+  }
 }

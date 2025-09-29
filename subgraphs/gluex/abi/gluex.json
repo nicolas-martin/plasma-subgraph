@@ -1,0 +1,520 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "gluexTreasury",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "nativeToken",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "EthDepositRejected",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidNativeTokenInputAmount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidSlippage",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MaxFeeLimitExceeded",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MinFeeLimitExceeded",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MinFeeTooHigh",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NativeTransferFailed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NegativeSlippageLimit",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OnlyGlueTreasury",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PartnerSlippageShareTooHigh",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PartnerSurplusShareTooHigh",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Permit2TransferAmountTooHigh",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ProtocolSlippageShareTooLow",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ProtocolSurplusShareTooLow",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "RoutingFeeTooHigh",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "RoutingFeeTooLow",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SafeTransferFailed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SafeTransferFromFailed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SlippageLimitTooLarge",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ZeroAddress",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "uniquePID",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "outputReceiver",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "contract IERC20",
+        "name": "inputToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "inputAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "contract IERC20",
+        "name": "outputToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "finalOutputAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "partnerFee",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "routingFee",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "partnerShare",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "protocolShare",
+        "type": "uint256"
+      }
+    ],
+    "name": "Routed",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "_MAX_FEE",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "_MAX_PARTNER_SLIPPAGE_SHARE_LIMIT",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "_MAX_PARTNER_SURPLUS_SHARE_LIMIT",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "_MIN_FEE",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "_MIN_PROTOCOL_SLIPPAGE_SHARE_LIMIT",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "_MIN_PROTOCOL_SURPLUS_SHARE_LIMIT",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "_RAW_CALL_GAS_LIMIT",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "_nativeToken",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC20[]",
+        "name": "feeTokens",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address payable",
+        "name": "receiver",
+        "type": "address"
+      }
+    ],
+    "name": "collectFees",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "gasLimit",
+        "type": "uint256"
+      }
+    ],
+    "name": "setGasLimit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "maxFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMaxFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "minFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMinFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "partnerSlippageShareLimit",
+        "type": "uint256"
+      }
+    ],
+    "name": "setPartnerSlippageShareLimit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "partnerSurplusShareLimit",
+        "type": "uint256"
+      }
+    ],
+    "name": "setPartnerSurplusShareLimit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IExecutor",
+        "name": "executor",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "contract IERC20",
+            "name": "inputToken",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IERC20",
+            "name": "outputToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "inputReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "outputReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "partnerAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "inputAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "outputAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "partnerFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "routingFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "partnerSurplusShare",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "protocolSurplusShare",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "partnerSlippageShare",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "protocolSlippageShare",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "effectiveOutputAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minOutputAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isPermit2",
+            "type": "bool"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "uniquePID",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct GluexRouter.RouteDescription",
+        "name": "desc",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "target",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "callData",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Interaction[]",
+        "name": "interactions",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "swap",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "finalOutputAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
+  }
+]

@@ -1,5 +1,5 @@
 specVersion: 0.0.4
-description: POAP
+description: rtb
 repository: https://github.com/poap-xyz/poap-mainnet-subgraph
 schema:
     file: ./schema.graphql

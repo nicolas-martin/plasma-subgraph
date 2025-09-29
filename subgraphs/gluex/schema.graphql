@@ -1,0 +1,61 @@
+type Swap @entity {
+  id: ID!
+  uniquePID: Bytes!
+  userAddress: Bytes!
+  outputReceiver: Bytes!
+  inputToken: Bytes!
+  inputAmount: BigInt!
+  outputToken: Bytes!
+  finalOutputAmount: BigInt!
+  partnerFee: BigInt!
+  routingFee: BigInt!
+  partnerShare: BigInt!
+  protocolShare: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type DailyVolume @entity {
+  id: ID! # day-tokenAddress
+  date: BigInt!
+  token: Bytes!
+  volume: BigInt!
+  swapCount: BigInt!
+}
+
+type TotalVolume @entity {
+  id: ID! # token address
+  token: Bytes!
+  totalVolume: BigInt!
+  totalSwapCount: BigInt!
+}
+
+type User @entity {
+  id: ID! # user address
+  totalSwaps: BigInt!
+  totalVolumeUSD: BigDecimal!
+  firstSwapAt: BigInt!
+  lastSwapAt: BigInt!
+  swaps: [Swap!]! @derivedFrom(field: "userAddress")
+}
+
+type FeeCollected @entity {
+  id: ID!
+  tokens: [Bytes!]!
+  receiver: Bytes!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Protocol @entity {
+  id: ID! # "protocol"
+  totalSwaps: BigInt!
+  totalVolumeUSD: BigDecimal!
+  totalPartnerFees: BigInt!
+  totalRoutingFees: BigInt!
+  totalProtocolShare: BigInt!
+  totalPartnerShare: BigInt!
+  uniqueUsers: BigInt!
+}
