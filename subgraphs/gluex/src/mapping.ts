@@ -52,15 +52,15 @@ function getDailyVolumeID(timestamp: BigInt, token: Bytes): string {
 function getTokenType(inputToken: string, outputToken: string): string {
 	// Check if either input or output token is in the categorized lists
 	if (LEND_TOKENS.includes(inputToken) || LEND_TOKENS.includes(outputToken)) {
-		return 'lend'
+		return "LEND"
 	}
 	if (INVEST_TOKENS.includes(inputToken) || INVEST_TOKENS.includes(outputToken)) {
-		return 'invest'
+		return "INVEST"
 	}
 	if (LP_TOKENS.includes(inputToken) || LP_TOKENS.includes(outputToken)) {
-		return 'lp'
+		return "LP"
 	}
-	return 'swap'
+	return "DEFAULT"
 }
 
 function createSwapEntity(
@@ -73,8 +73,9 @@ function createSwapEntity(
 	let outputTokenLower = event.params.outputToken.toHexString().toLowerCase()
 	let tokenType = getTokenType(inputTokenLower, outputTokenLower)
 
-	if (tokenType == 'lend') {
+	if (tokenType == "LEND") {
 		let swap = new LendSwap(id)
+		swap.type = "LEND"
 		swap.uniquePID = event.params.uniquePID
 		swap.user = userId
 		swap.userAddress = Bytes.fromHexString(userAddressLower)
@@ -91,8 +92,9 @@ function createSwapEntity(
 		swap.blockNumber = event.block.number
 		swap.transactionHash = event.transaction.hash
 		swap.save()
-	} else if (tokenType == 'invest') {
+	} else if (tokenType == "INVEST") {
 		let swap = new InvestSwap(id)
+		swap.type = "INVEST"
 		swap.uniquePID = event.params.uniquePID
 		swap.user = userId
 		swap.userAddress = Bytes.fromHexString(userAddressLower)
@@ -109,8 +111,9 @@ function createSwapEntity(
 		swap.blockNumber = event.block.number
 		swap.transactionHash = event.transaction.hash
 		swap.save()
-	} else if (tokenType == 'lp') {
+	} else if (tokenType == "LP") {
 		let swap = new LPSwap(id)
+		swap.type = "LP"
 		swap.uniquePID = event.params.uniquePID
 		swap.user = userId
 		swap.userAddress = Bytes.fromHexString(userAddressLower)
@@ -129,6 +132,7 @@ function createSwapEntity(
 		swap.save()
 	} else {
 		let swap = new Swap(id)
+		swap.type = "DEFAULT"
 		swap.uniquePID = event.params.uniquePID
 		swap.user = userId
 		swap.userAddress = Bytes.fromHexString(userAddressLower)

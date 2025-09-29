@@ -1,5 +1,13 @@
+enum SwapType {
+  DEFAULT
+  LEND
+  INVEST
+  LP
+}
+
 interface SwapInterface {
   id: ID!
+  type: SwapType!
   uniquePID: Bytes!
   user: User!
   userAddress: Bytes!
@@ -19,6 +27,7 @@ interface SwapInterface {
 
 type Swap implements SwapInterface @entity {
   id: ID!
+  type: SwapType!
   uniquePID: Bytes!
   user: User!
   userAddress: Bytes!
@@ -38,6 +47,7 @@ type Swap implements SwapInterface @entity {
 
 type LendSwap implements SwapInterface @entity {
   id: ID!
+  type: SwapType!
   uniquePID: Bytes!
   user: User!
   userAddress: Bytes!
@@ -57,6 +67,7 @@ type LendSwap implements SwapInterface @entity {
 
 type InvestSwap implements SwapInterface @entity {
   id: ID!
+  type: SwapType!
   uniquePID: Bytes!
   user: User!
   userAddress: Bytes!
@@ -76,6 +87,7 @@ type InvestSwap implements SwapInterface @entity {
 
 type LPSwap implements SwapInterface @entity {
   id: ID!
+  type: SwapType!
   uniquePID: Bytes!
   user: User!
   userAddress: Bytes!
@@ -127,10 +139,6 @@ type User @entity {
   firstSwapAt: BigInt!
   lastSwapAt: BigInt!
   swaps: [SwapInterface!]! @derivedFrom(field: "user")
-  defaultSwaps: [Swap!]! @derivedFrom(field: "user")
-  lendSwaps: [LendSwap!]! @derivedFrom(field: "user")
-  investSwaps: [InvestSwap!]! @derivedFrom(field: "user")
-  lpSwaps: [LPSwap!]! @derivedFrom(field: "user")
   tokenVolumes: [UserTokenVolume!]! @derivedFrom(field: "user")
 }
 
