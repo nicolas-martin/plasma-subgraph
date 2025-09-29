@@ -1,22 +1,8 @@
 enum SwapType {
-  SWAP
+  DEFAULT
   LEND
   INVEST
   LP
-}
-
-type Token @entity {
-  id: ID! # token address (lowercase)
-  symbol: String!
-  name: String!
-  type: SwapType!
-  decimals: Int!
-}
-
-type TokenAmount @entity {
-  id: ID! # swap-id-input or swap-id-output
-  token: Token!
-  amount: BigInt!
 }
 
 interface SwapInterface {
@@ -26,8 +12,10 @@ interface SwapInterface {
   user: User!
   userAddress: Bytes!
   outputReceiver: Bytes!
-  input: TokenAmount!
-  output: TokenAmount!
+  inputToken: Bytes!
+  inputAmount: BigInt!
+  outputToken: Bytes!
+  finalOutputAmount: BigInt!
   partnerFee: BigInt!
   routingFee: BigInt!
   partnerShare: BigInt!
@@ -44,8 +32,10 @@ type Swap implements SwapInterface @entity {
   user: User!
   userAddress: Bytes!
   outputReceiver: Bytes!
-  input: TokenAmount!
-  output: TokenAmount!
+  inputToken: Bytes!
+  inputAmount: BigInt!
+  outputToken: Bytes!
+  finalOutputAmount: BigInt!
   partnerFee: BigInt!
   routingFee: BigInt!
   partnerShare: BigInt!
@@ -62,8 +52,10 @@ type LendSwap implements SwapInterface @entity {
   user: User!
   userAddress: Bytes!
   outputReceiver: Bytes!
-  input: TokenAmount!
-  output: TokenAmount!
+  inputToken: Bytes!
+  inputAmount: BigInt!
+  outputToken: Bytes!
+  finalOutputAmount: BigInt!
   partnerFee: BigInt!
   routingFee: BigInt!
   partnerShare: BigInt!
@@ -80,8 +72,10 @@ type InvestSwap implements SwapInterface @entity {
   user: User!
   userAddress: Bytes!
   outputReceiver: Bytes!
-  input: TokenAmount!
-  output: TokenAmount!
+  inputToken: Bytes!
+  inputAmount: BigInt!
+  outputToken: Bytes!
+  finalOutputAmount: BigInt!
   partnerFee: BigInt!
   routingFee: BigInt!
   partnerShare: BigInt!
@@ -98,8 +92,10 @@ type LPSwap implements SwapInterface @entity {
   user: User!
   userAddress: Bytes!
   outputReceiver: Bytes!
-  input: TokenAmount!
-  output: TokenAmount!
+  inputToken: Bytes!
+  inputAmount: BigInt!
+  outputToken: Bytes!
+  finalOutputAmount: BigInt!
   partnerFee: BigInt!
   routingFee: BigInt!
   partnerShare: BigInt!
@@ -112,21 +108,21 @@ type LPSwap implements SwapInterface @entity {
 type DailyVolume @entity {
   id: ID! # day-tokenAddress
   date: BigInt!
-  token: Token!
+  token: Bytes!
   volume: BigInt!
   swapCount: BigInt!
 }
 
 type TotalVolume @entity {
   id: ID! # token address
-  token: Token!
+  token: Bytes!
   totalVolume: BigInt!
   totalSwapCount: BigInt!
 }
 
 type GlobalTokenVolume @entity {
   id: ID! # token address
-  token: Token!
+  token: Bytes!
   totalVolumeIn: BigInt! # Total volume as input token
   totalVolumeOut: BigInt! # Total volume as output token
   totalVolume: BigInt! # Combined total (in + out)
@@ -149,7 +145,7 @@ type User @entity {
 type UserTokenVolume @entity {
   id: ID! # user-token
   user: User!
-  token: Token!
+  token: Bytes!
   totalVolume: BigInt! # totalInput + totalOutput
   swapCount: BigInt!
   lastUpdated: BigInt!
@@ -178,7 +174,7 @@ type Protocol @entity {
 type ProtocolTokenVolume @entity {
   id: ID! # token address
   protocol: Protocol!
-  token: Token!
+  token: Bytes!
   totalVolume: BigInt!
   swapCount: BigInt!
   lastUpdated: BigInt!
