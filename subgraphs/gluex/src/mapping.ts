@@ -56,26 +56,37 @@ function getOrCreateToken(tokenAddress: string): Token {
 	if (token == null) {
 		token = new Token(tokenAddress)
 
-		// Try to find token data in our dictionaries
-		let tokenData = LEND_TOKENS.get(tokenAddress)
-		if (!tokenData) {
-			tokenData = INVEST_TOKENS.get(tokenAddress)
-		}
-		if (!tokenData) {
-			tokenData = LP_TOKENS.get(tokenAddress)
-		}
+		// Default values if token is not in our dictionary
+		token.symbol = "UNKNOWN"
+		token.name = "Unknown Token"
+		token.type = "SWAP"
+		token.decimals = 18
 
-		if (tokenData) {
-			token.symbol = tokenData.symbol
-			token.name = tokenData.name
-			token.type = tokenData.type
-			token.decimals = BigInt.fromString(tokenData.decimals).toI32()
-		} else {
-			// Default values if token is not in our dictionary
-			token.symbol = "UNKNOWN"
-			token.name = "Unknown Token"
-			token.type = "SWAP"
-			token.decimals = 18
+		// Try to find token data in our dictionaries and override defaults
+		if (LEND_TOKENS.has(tokenAddress)) {
+			let tokenData = LEND_TOKENS.get(tokenAddress)
+			if (tokenData != null) {
+				token.symbol = tokenData.symbol
+				token.name = tokenData.name
+				token.type = tokenData.type
+				token.decimals = BigInt.fromString(tokenData.decimals).toI32()
+			}
+		} else if (INVEST_TOKENS.has(tokenAddress)) {
+			let tokenData = INVEST_TOKENS.get(tokenAddress)
+			if (tokenData != null) {
+				token.symbol = tokenData.symbol
+				token.name = tokenData.name
+				token.type = tokenData.type
+				token.decimals = BigInt.fromString(tokenData.decimals).toI32()
+			}
+		} else if (LP_TOKENS.has(tokenAddress)) {
+			let tokenData = LP_TOKENS.get(tokenAddress)
+			if (tokenData != null) {
+				token.symbol = tokenData.symbol
+				token.name = tokenData.name
+				token.type = tokenData.type
+				token.decimals = BigInt.fromString(tokenData.decimals).toI32()
+			}
 		}
 
 		token.save()
