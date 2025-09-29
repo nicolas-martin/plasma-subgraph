@@ -15,7 +15,8 @@ import {
 	GlobalTokenVolume,
 	User,
 	UserTokenVolume,
-	Protocol
+	Protocol,
+	ProtocolTokenVolume
 } from '../generated/schema'
 
 const PROTOCOL_ID = "protocol"
@@ -73,7 +74,7 @@ export function handleRouted(event: RoutedEvent): void {
 	swap.transactionHash = event.transaction.hash
 	swap.save()
 
-	// Update UserTokenVolume for input token
+	// Update UserTokenVolume for input token only
 	let inputTokenLower = event.params.inputToken.toHexString().toLowerCase()
 	let inputVolumeId = userAddressLower.concat('-').concat(inputTokenLower)
 	let inputVolume = UserTokenVolume.load(inputVolumeId)
@@ -91,23 +92,14 @@ export function handleRouted(event: RoutedEvent): void {
 	inputVolume.lastUpdated = event.block.timestamp
 	inputVolume.save()
 
-	// Update UserTokenVolume for output token
 	let outputTokenLower = event.params.outputToken.toHexString().toLowerCase()
+	let isNewOutputTokenUser = false
+	// Check if output token volume exists for unique user tracking
 	let outputVolumeId = userAddressLower.concat('-').concat(outputTokenLower)
 	let outputVolume = UserTokenVolume.load(outputVolumeId)
-	let isNewOutputTokenUser = false
 	if (outputVolume == null) {
-		outputVolume = new UserTokenVolume(outputVolumeId)
-		outputVolume.user = user.id
-		outputVolume.token = Bytes.fromHexString(outputTokenLower)
-		outputVolume.totalVolume = ZERO_BI
-		outputVolume.swapCount = ZERO_BI
 		isNewOutputTokenUser = true
 	}
-	outputVolume.totalVolume = outputVolume.totalVolume.plus(event.params.finalOutputAmount)
-	outputVolume.swapCount = outputVolume.swapCount.plus(ONE_BI)
-	outputVolume.lastUpdated = event.block.timestamp
-	outputVolume.save()
 
 	// Update DailyVolume for input token
 	let inputTokenBytes = Bytes.fromHexString(inputTokenLower)
@@ -232,4 +224,18 @@ export function handleRouted(event: RoutedEvent): void {
 	protocol.totalProtocolShare = protocol.totalProtocolShare.plus(event.params.protocolShare)
 	protocol.totalPartnerShare = protocol.totalPartnerShare.plus(event.params.partnerShare)
 	protocol.save()
+
+	// Update ProtocolTokenVolume for input token only
+	let inputProtocolVolume = ProtocolTokenVolume.load(inputTokenLower)
+	if (inputProtocolVolume == null) {
+		inputProtocolVolume = new ProtocolTokenVolume(inputTokenLower)
+		inputProtocolVolume.protocol = PROTOCOL_ID
+		inputProtocolVolume.token = Bytes.fromHexString(inputTokenLower)
+		inputProtocolVolume.totalVolume = ZERO_BI
+		inputProtocolVolume.swapCount = ZERO_BI
+	}
+	inputProtocolVolume.totalVolume = inputProtocolVolume.totalVolume.plus(event.params.inputAmount)
+	inputProtocolVolume.swapCount = inputProtocolVolume.swapCount.plus(ONE_BI)
+	inputProtocolVolume.lastUpdated = event.block.timestamp
+	inputProtocolVolume.save()
 }

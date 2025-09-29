@@ -1,0 +1,768 @@
+Ok now we want to create different types of entities depending on the token address that was interacting with. For now let's just re-use the same fields as "swaps", for any token that's no in any of this list let's use the default swap entity
+
+For example here is the list of lend:
+```
+{
+  "data": {
+    "tokensByType": {
+      "items": [
+        {
+          "tokenAddress": "0xc1a318493ff07a68fe438cee60a7ad0d0dba300e",
+          "symbol": "aPlasUSDe",
+          "name": "Aave Plasma sUSDe",
+          "type": "lend"
+        },
+        {
+          "tokenAddress": "0x5d72a9d9a9510cd8cbdba12ac62593a58930a948",
+          "symbol": "aPlaUSDT0",
+          "name": "Aave Plasma USDT0",
+          "type": "lend"
+        },
+        {
+          "tokenAddress": "0xaf1a7a488c8348b41d5860c04162af7d3d38a996",
+          "symbol": "aPlaweETH",
+          "name": "Aave Plasma weETH",
+          "type": "lend"
+        },
+        {
+          "tokenAddress": "0x5c43d6c075c7cf95fb188fb2977eed3e3f2a92c2",
+          "symbol": "aPlaXAUt0",
+          "name": "Aave Plasma XAUt0",
+          "type": "lend"
+        },
+        {
+          "tokenAddress": "0xf1ab7f60128924d69f6d7de25a20ef70bbd43d07",
+          "symbol": "aPlaWETH",
+          "name": "Aave Plasma WETH",
+          "type": "lend"
+        },
+        {
+          "tokenAddress": "0x7519403e12111ff6b710877fcd821d0c12caf43a",
+          "symbol": "aPlaUSDe",
+          "name": "Aave Plasma USDe",
+          "type": "lend"
+        }
+      ],
+      "total": 6,
+      "hasMore": false
+    }
+  }
+}
+```
+invest:
+```
+{
+  "data": {
+    "tokensByType": {
+      "items": [
+        {
+          "tokenAddress": "0x9ecaf80c1303cca8791afbc0ad405c8a35e8d9f1",
+          "symbol": "rsETH",
+          "name": "KelpDao Restaked ETH",
+          "type": "invest"
+        }
+      ],
+      "total": 1,
+      "hasMore": false
+    }
+  }
+}
+```
+
+LP:
+```
+{
+  "data": {
+    "tokensByType": {
+      "hasMore": false,
+      "items": [
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Printing",
+          "symbol": "Print",
+          "tokenAddress": "0x15bbbcf3edf4cca5a99147257b86562dbb995d9c",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Gazilly WXPL",
+          "symbol": "Gazilly-WXPL",
+          "tokenAddress": "0xbd6459e682a02b84a67d0b968c81148cdb54c0fa",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "xUSD waPlaUSDT0",
+          "symbol": "xUSD-waPlaUSDT0",
+          "tokenAddress": "0x76470f19cc167cd1d2a0078e8aa11009748d8a93",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Dove/XPL",
+          "symbol": "DoveXPL",
+          "tokenAddress": "0xe080d14bf6ecec4c48ebe11055d4dea5dbc30e41",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "PAOLO WXPL",
+          "symbol": "PAOLO-WXPL",
+          "tokenAddress": "0xa06954e78e1cebbbe9c3efd51ada9f9ce125ea83",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "50WXPL 50trillions",
+          "symbol": "50WXPL-50trillions",
+          "tokenAddress": "0xebed2dcfdf027f6dd4be2b6cfb8d0418d43714e6",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "50PLAZIX 50WXPL",
+          "symbol": "50PLAZIX-50WXPL",
+          "tokenAddress": "0x11e7b1fe6fb6112ed72b0dd9985b4a5a50a43fc0",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "PLAZIX WXPL",
+          "symbol": "PLAZIX-WXPL",
+          "tokenAddress": "0x21199862da98159e7e54d85011a41e0d0914cdd1",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "50MQ 50WXPL",
+          "symbol": "99MQ-1WXPL",
+          "tokenAddress": "0xd9ea02992c2ff27b0a64367ab41b522b962376d9",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "USDe USDT0",
+          "symbol": "USDe-USDT0",
+          "tokenAddress": "0xe3a3420b7ef5ba6734605dc62328334ab55f97df",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Ethena Surge waUSDe-waUSDT0",
+          "symbol": "waPlaUSDe-waPlaUSDT0",
+          "tokenAddress": "0x6a74be33b5393d8a3eba4d69b78f9d9da947c48c",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Ethena Surge waUSDe-waUSDT0",
+          "symbol": "waPlaUSDe-waPlaUSDT0",
+          "tokenAddress": "0x968f7fba937ca70ed1e44e9a15e125f2a6ad4ca9",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "XPL/USDT0",
+          "symbol": "XPLUSDT0",
+          "tokenAddress": "0x265c45757573ba264021e954b46bd5df530d12d2",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "asdasdas",
+          "symbol": "asdasd",
+          "tokenAddress": "0x0eac4526321866178c6444f0a211a21db4a0ed4c",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "50PEEP 50WXPL",
+          "symbol": "50PEEP-50WXPL",
+          "tokenAddress": "0x404e5bb94ad6335dc8f769a70a98d2320bfbef9c",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "pdog",
+          "symbol": "pdog",
+          "tokenAddress": "0xd59aaecdc89c30438377f00ca62ce45f28628cbd",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "wrsETH waPlaWETH",
+          "symbol": "wrsETH-waPlaWETH",
+          "tokenAddress": "0xc36060ad9b7f1c5c20dedba0c25d41f0815a963c",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "501 50WXPL",
+          "symbol": "501-50WXPL",
+          "tokenAddress": "0x277af8acde6cb23c59142513fba49b82af8642e3",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Stream Surge xUSD-waUSDT0",
+          "symbol": "xUSD-waPlaUSDT0",
+          "tokenAddress": "0x694c009aa31b3f80ee18c218b02390ca2d7151e7",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "PlasmaUSD/USDT0",
+          "symbol": "PUSDUSDT0",
+          "tokenAddress": "0x95af759ec2f4385edbbba959a8a1cdc65610d080",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "reCLAMM WXPL-USDT0",
+          "symbol": "WXPL-USDT0",
+          "tokenAddress": "0xe14ba497a7c51f34896d327ec075f3f18210a270",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "WXPL PlasmaX",
+          "symbol": "WXPL-PlasmaX",
+          "tokenAddress": "0xe5d7114cddcd694a3116037edd56542aeedb58f8",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "UCF WXPL",
+          "symbol": "UCF-WXPL",
+          "tokenAddress": "0xcc7e72aedb385ae14a8b2e459f40dcb264d501ae",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "501MEME 50WXPL",
+          "symbol": "501MEME-50WXPL",
+          "tokenAddress": "0x8f6abb9a36137b2bff3dfea73fb81920d2cbfc88",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "1",
+          "symbol": "1",
+          "tokenAddress": "0x78051fbf40581619ffaadb6cd7e5856d4a327a6d",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "XPL",
+          "symbol": "RGN",
+          "tokenAddress": "0xde710f0b1c2264e85b6d35d709d1f6ec4c44f564",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "USDT0/sUSDe",
+          "symbol": "sUSDeUSDT0",
+          "tokenAddress": "0x1e8d78e9b3f0152d54d32904b7933f1cfe439df1",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Ether.Fi Surge weETH-waWETH",
+          "symbol": "weETH-waPlaWETH",
+          "tokenAddress": "0xda51975d78cb172b46d7292cec9fa9e74723ef3b",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "WXPL/XPLDOG",
+          "symbol": "WXPLXPLDOG",
+          "tokenAddress": "0xc222148dcb4e5b5a2aaba2764bf13653619f58cf",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "PDOG",
+          "symbol": "WXPL/PDOG",
+          "tokenAddress": "0xb3c9ae6688ff412534c1863ce264c4af534d5fe6",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "BANKLESS/USDT0",
+          "symbol": "BNKLUSDT0",
+          "tokenAddress": "0x4feb75181e63763d74346a098a43423894b119cc",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "asdasdasd",
+          "symbol": "asdasdasd",
+          "tokenAddress": "0xae6419b2ff94a150ef5b3aa11414c9e1ba659575",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "PlasmaUSD-USDT0",
+          "symbol": "50PlasmaUSD-50waPlaUSDT0",
+          "tokenAddress": "0x000453ba4b018b815f359765d3079e36618ede7d",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "USDT0 PlasmaUSD",
+          "symbol": "USDT0-PlasmaUSD",
+          "tokenAddress": "0x5e8c003103fe6ce779b55f9e7f37c0dd8d27f460",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Ethena Surge sUSDe-waUSDT0",
+          "symbol": "sUSDe-waPlaUSDT0",
+          "tokenAddress": "0x31e098c9daf9cd478228b7544e99319c57ae50fa",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Ethena Surge weETH-waWETH",
+          "symbol": "weETH-waPlaWETH",
+          "tokenAddress": "0x61c9a8a54734025c5108b762ea8bdfea721ed696",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "PDog/XPL",
+          "symbol": "PDogXPL",
+          "tokenAddress": "0x8e3da27b6496ca4373ad8261835f56d0107c8e25",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "XMOON/XPL",
+          "symbol": "XMOON",
+          "tokenAddress": "0x9638224cb4b4be9abf8ecfdcabe38a35558972a9",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "WXPL",
+          "symbol": "RGN",
+          "tokenAddress": "0xc0bcf41cc87c9b9ffc63d1fb30823f0b6094cc6a",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "WXPL PLAZIX",
+          "symbol": "WXPL-PLAZIX",
+          "tokenAddress": "0x5618d0dc39c7e7e4ae798d4d09417863c4e739cd",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "50BOOB 50WXPL",
+          "symbol": "50BOOB-50WXPL",
+          "tokenAddress": "0x0c01d98c9d3fe67b76c2d536c44eccec23cd7a15",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "waPlaUSDT0 PlasmaUSD",
+          "symbol": "waPlaUSDT0-PlasmaUSD",
+          "tokenAddress": "0x6b9a44ba468afebc7dbc196f310ba9017c25de69",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "EtherFi Surge weETH-waWETH",
+          "symbol": "weETH-waPlaWETH",
+          "tokenAddress": "0xcce9af90cd1ea4b5eac60102f40c72bf361fc7ac",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "50WXPL 50PlasmaX",
+          "symbol": "50WXPL-50PlasmaX",
+          "tokenAddress": "0x8518ae96fc7ee86b637f08a64bef912b213106d8",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "WXPL PLAZIX",
+          "symbol": "WXPL-PLAZIX",
+          "tokenAddress": "0x0fb23c6363626aadd9ebffc55fa951594f03c0b4",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "test",
+          "symbol": "eyah",
+          "tokenAddress": "0xfca64216dba4445f75525d5cb7fdcfa9243a6f4f",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "reCLAMM sUSDai-USDT0",
+          "symbol": "sUSDai-USDT0",
+          "tokenAddress": "0xb3ca3ead1c59ded552cd30a6992038284b418b65",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "XPLCURVE/WXPL",
+          "symbol": "XCURVE/XPL",
+          "tokenAddress": "0x3183f5956a7b8cbaacea34401e227af1c6df6d34",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "USDe USDT0",
+          "symbol": "USDe-USDT0",
+          "tokenAddress": "0xe6dee82ab43e86e54c275905ee102a23a287c56d",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "1WXPL 99UCF",
+          "symbol": "1WXPL-99UCF",
+          "tokenAddress": "0x2e8837fabc74b5731b468d9b94cde2513dd2d7a6",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "80DOLOLO 20WXPL",
+          "symbol": "80DOLOLO-20WXPL",
+          "tokenAddress": "0x70cfbd3d004df8ac9462c29edc4a95e756c29b59",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "PLASMO/WXPL",
+          "symbol": "PLASMO/WXP",
+          "tokenAddress": "0xd993478b7cce98a0319660b4279602502684f45f",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "USDT0/USDai",
+          "symbol": "USDt0USDai",
+          "tokenAddress": "0x942644106b073e30d72c2c5d7529d5c296ea91ab",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "asdfasd",
+          "symbol": "asdasdasd",
+          "tokenAddress": "0x40981ce1595d7810b3cb26dd265d92fa6b421935",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "99MQ 1WXPL",
+          "symbol": "99MQ-1WXPL",
+          "tokenAddress": "0x436f36e9e975edeb1e3f161e3cef8571ee9c34e1",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Ethena Surge waUSDe-waUSDT0",
+          "symbol": "waPlaUSDe-waPlaUSDT0",
+          "tokenAddress": "0xcef60f26a7d30e2b45e8743e87bc3e6e301a37f0",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "PLASMO/WXPL",
+          "symbol": "PLASMO/WXP",
+          "tokenAddress": "0xc9d02b7c8df0ee505b4614ab36c0efb74745d169",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "WXPL Kei",
+          "symbol": "WXPL-Kei",
+          "tokenAddress": "0xd1e89c7991a6c06b0bc8631f0b59553a2a130b8d",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Surge USDai-waUSDT0",
+          "symbol": "USDai-waPlaUSDT0",
+          "tokenAddress": "0x01e2c7fcde2b8d5d1413732c4e274ba5b06b1e54",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "WXPL/UCF",
+          "symbol": "WXPLUCF",
+          "tokenAddress": "0x04efd07bcfc721b74f0fc41582cce8851980e62e",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "XPLPEPE/XPL",
+          "symbol": "PEPE/XPL",
+          "tokenAddress": "0x625294c6163782d5b004e0231b681c0915183764",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "USDT0/syrupUSDT",
+          "symbol": "syrupUSDT0",
+          "tokenAddress": "0x269b47978f4348c96f521658ef452ff85906fcfe",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "PlasmaUSD-waPlaUSDT0",
+          "symbol": "PlasmaUSD-waPlaUSDT0",
+          "tokenAddress": "0x0b6253f03255623643f254f41a22455050ddb416",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "cgfag",
+          "symbol": "asdgasdg",
+          "tokenAddress": "0x5ff3c9f9e329824abacb44b5a724c9ef42f191aa",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Ethena Surge sUSDe-waUSDT0",
+          "symbol": "sUSDe-waPlaUSDT0",
+          "tokenAddress": "0xd9c4e277c93374a9f8c877a9d06707a88092e8f0",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Kelp Surge wrsETH-waWETH",
+          "symbol": "wrsETH-waPlaWETH",
+          "tokenAddress": "0x05eb2d848c431b1a37d0cf0eecc7f211b3bb1dee",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Ethena Surge waUSDe-waUSDT0",
+          "symbol": "waPlasUSDe-waPlaUSDT0",
+          "tokenAddress": "0xd26361a9e960e24f3502b3b08deddf24cc50b36c",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "50WXPL-50USDe",
+          "symbol": "50WXPL-50USDe",
+          "tokenAddress": "0x26c2030f6fa3e16de2d37ba12dccd7b1cfcaf99b",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Weighted weETH-USDT",
+          "symbol": "W-weETH-USDT",
+          "tokenAddress": "0xc9a38dfbca8b620ec10e7b7169ed3ff7338311fa",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "USDT0/USDe",
+          "symbol": "USDT0-USDe",
+          "tokenAddress": "0x2d84d79c852f6842abe0304b70bbaa1506add457",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "50WETH 50PEEP",
+          "symbol": "50WETH-50PEEP",
+          "tokenAddress": "0xd2df29c7bc0b95ff3a71fc1615787ac0732a0d12",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "XMOON/XPL",
+          "symbol": "XMOON",
+          "tokenAddress": "0x32628388bc77878a741f029f20b13dedec8fb5b3",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "asdasd",
+          "symbol": "asasdasd",
+          "tokenAddress": "0x74d80ee400d3026fdd2520265cc98300710b25d4",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "Trillady",
+          "symbol": "Trillady",
+          "tokenAddress": "0x2bb0881311d9ce0c2b09bad8d10d0542b9273ec6",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "syrupUSDT waPlaUSDT0",
+          "symbol": "syrupUSDT-waPlaUSDT0",
+          "tokenAddress": "0x699153933db85fb32e8937fabeb8a16b3bace4a7",
+          "type": "lp"
+        },
+        {
+          "branding": {
+            "logoUri": null
+          },
+          "name": "TRILLIONS/WXPL",
+          "symbol": "TrillWXPL",
+          "tokenAddress": "0x93cba7aa78b205cf63ccce567665ba8994efda98",
+          "type": "lp"
+        }
+      ],
+      "total": 213
+    }
+  }
+}
+
