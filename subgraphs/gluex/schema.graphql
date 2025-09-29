@@ -48,21 +48,17 @@ type GlobalTokenVolume @entity {
 type User @entity {
   id: ID! # user address
   totalSwaps: BigInt!
-  totalInputVolume: BigInt! # Total volume of all input tokens
-  totalOutputVolume: BigInt! # Total volume of all output tokens
   firstSwapAt: BigInt!
   lastSwapAt: BigInt!
   swaps: [Swap!]! @derivedFrom(field: "user")
-  tokenBalances: [UserTokenBalance!]! @derivedFrom(field: "user")
+  tokenVolumes: [UserTokenVolume!]! @derivedFrom(field: "user")
 }
 
-type UserTokenBalance @entity {
+type UserTokenVolume @entity {
   id: ID! # user-token
   user: User!
   token: Bytes!
-  totalInput: BigInt!
-  totalOutput: BigInt!
-  netAmount: BigInt! # output - input (can be negative)
+  totalVolume: BigInt! # totalInput + totalOutput
   swapCount: BigInt!
   lastUpdated: BigInt!
 }
@@ -84,4 +80,14 @@ type Protocol @entity {
   totalProtocolShare: BigInt!
   totalPartnerShare: BigInt!
   uniqueUsers: BigInt!
+  tokenVolumes: [ProtocolTokenVolume!]! @derivedFrom(field: "protocol")
+}
+
+type ProtocolTokenVolume @entity {
+  id: ID! # token address
+  protocol: Protocol!
+  token: Bytes!
+  totalVolume: BigInt!
+  swapCount: BigInt!
+  lastUpdated: BigInt!
 }

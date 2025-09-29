@@ -14,7 +14,7 @@ import {
 	TotalVolume,
 	GlobalTokenVolume,
 	User,
-	UserTokenBalance,
+	UserTokenVolume,
 	Protocol
 } from '../generated/schema'
 
@@ -48,13 +48,9 @@ export function handleRouted(event: RoutedEvent): void {
 	if (user == null) {
 		user = new User(userAddressLower)
 		user.totalSwaps = ZERO_BI
-		user.totalInputVolume = ZERO_BI
-		user.totalOutputVolume = ZERO_BI
 		user.firstSwapAt = event.block.timestamp
 	}
 	user.totalSwaps = user.totalSwaps.plus(ONE_BI)
-	user.totalInputVolume = user.totalInputVolume.plus(event.params.inputAmount)
-	user.totalOutputVolume = user.totalOutputVolume.plus(event.params.finalOutputAmount)
 	user.lastSwapAt = event.block.timestamp
 	user.save()
 
@@ -77,43 +73,41 @@ export function handleRouted(event: RoutedEvent): void {
 	swap.transactionHash = event.transaction.hash
 	swap.save()
 
-	// Update UserTokenBalance for input token
+	// Update UserTokenVolume for input token
 	let inputTokenLower = event.params.inputToken.toHexString().toLowerCase()
-	let inputBalanceId = userAddressLower.concat('-').concat(inputTokenLower)
-	let inputBalance = UserTokenBalance.load(inputBalanceId)
-	if (inputBalance == null) {
-		inputBalance = new UserTokenBalance(inputBalanceId)
-		inputBalance.user = user.id
-		inputBalance.token = Bytes.fromHexString(inputTokenLower)
-		inputBalance.totalInput = ZERO_BI
-		inputBalance.totalOutput = ZERO_BI
-		inputBalance.netAmount = ZERO_BI
-		inputBalance.swapCount = ZERO_BI
+	let inputVolumeId = userAddressLower.concat('-').concat(inputTokenLower)
+	let inputVolume = UserTokenVolume.load(inputVolumeId)
+	let isNewInputTokenUser = false
+	if (inputVolume == null) {
+		inputVolume = new UserTokenVolume(inputVolumeId)
+		inputVolume.user = user.id
+		inputVolume.token = Bytes.fromHexString(inputTokenLower)
+		inputVolume.totalVolume = ZERO_BI
+		inputVolume.swapCount = ZERO_BI
+		isNewInputTokenUser = true
 	}
-	inputBalance.totalInput = inputBalance.totalInput.plus(event.params.inputAmount)
-	inputBalance.netAmount = inputBalance.totalOutput.minus(inputBalance.totalInput)
-	inputBalance.swapCount = inputBalance.swapCount.plus(ONE_BI)
-	inputBalance.lastUpdated = event.block.timestamp
-	inputBalance.save()
+	inputVolume.totalVolume = inputVolume.totalVolume.plus(event.params.inputAmount)
+	inputVolume.swapCount = inputVolume.swapCount.plus(ONE_BI)
+	inputVolume.lastUpdated = event.block.timestamp
+	inputVolume.save()
 
-	// Update UserTokenBalance for output token
+	// Update UserTokenVolume for output token
 	let outputTokenLower = event.params.outputToken.toHexString().toLowerCase()
-	let outputBalanceId = userAddressLower.concat('-').concat(outputTokenLower)
-	let outputBalance = UserTokenBalance.load(outputBalanceId)
-	if (outputBalance == null) {
-		outputBalance = new UserTokenBalance(outputBalanceId)
-		outputBalance.user = user.id
-		outputBalance.token = Bytes.fromHexString(outputTokenLower)
-		outputBalance.totalInput = ZERO_BI
-		outputBalance.totalOutput = ZERO_BI
-		outputBalance.netAmount = ZERO_BI
-		outputBalance.swapCount = ZERO_BI
+	let outputVolumeId = userAddressLower.concat('-').concat(outputTokenLower)
+	let outputVolume = UserTokenVolume.load(outputVolumeId)
+	let isNewOutputTokenUser = false
+	if (outputVolume == null) {
+		outputVolume = new UserTokenVolume(outputVolumeId)
+		outputVolume.user = user.id
+		outputVolume.token = Bytes.fromHexString(outputTokenLower)
+		outputVolume.totalVolume = ZERO_BI
+		outputVolume.swapCount = ZERO_BI
+		isNewOutputTokenUser = true
 	}
-	outputBalance.totalOutput = outputBalance.totalOutput.plus(event.params.finalOutputAmount)
-	outputBalance.netAmount = outputBalance.totalOutput.minus(outputBalance.totalInput)
-	outputBalance.swapCount = outputBalance.swapCount.plus(ONE_BI)
-	outputBalance.lastUpdated = event.block.timestamp
-	outputBalance.save()
+	outputVolume.totalVolume = outputVolume.totalVolume.plus(event.params.finalOutputAmount)
+	outputVolume.swapCount = outputVolume.swapCount.plus(ONE_BI)
+	outputVolume.lastUpdated = event.block.timestamp
+	outputVolume.save()
 
 	// Update DailyVolume for input token
 	let inputTokenBytes = Bytes.fromHexString(inputTokenLower)
@@ -171,7 +165,6 @@ export function handleRouted(event: RoutedEvent): void {
 
 	// Update GlobalTokenVolume for input token
 	let inputGlobalVolume = GlobalTokenVolume.load(inputTokenLower)
-	let isNewInputTokenUser = false
 	if (inputGlobalVolume == null) {
 		inputGlobalVolume = new GlobalTokenVolume(inputTokenLower)
 		inputGlobalVolume.token = inputTokenBytes
@@ -182,10 +175,6 @@ export function handleRouted(event: RoutedEvent): void {
 		inputGlobalVolume.totalSwapsAsOutput = ZERO_BI
 		inputGlobalVolume.totalSwaps = ZERO_BI
 		inputGlobalVolume.uniqueUsers = ZERO_BI
-	}
-	// Check if this is first time user trades this token
-	if (inputBalance.swapCount.equals(ONE_BI)) {
-		isNewInputTokenUser = true
 	}
 	inputGlobalVolume.totalVolumeIn = inputGlobalVolume.totalVolumeIn.plus(event.params.inputAmount)
 	inputGlobalVolume.totalVolume = inputGlobalVolume.totalVolumeIn.plus(inputGlobalVolume.totalVolumeOut)
@@ -199,7 +188,6 @@ export function handleRouted(event: RoutedEvent): void {
 
 	// Update GlobalTokenVolume for output token
 	let outputGlobalVolume = GlobalTokenVolume.load(outputTokenLower)
-	let isNewOutputTokenUser = false
 	if (outputGlobalVolume == null) {
 		outputGlobalVolume = new GlobalTokenVolume(outputTokenLower)
 		outputGlobalVolume.token = outputTokenBytes
@@ -210,10 +198,6 @@ export function handleRouted(event: RoutedEvent): void {
 		outputGlobalVolume.totalSwapsAsOutput = ZERO_BI
 		outputGlobalVolume.totalSwaps = ZERO_BI
 		outputGlobalVolume.uniqueUsers = ZERO_BI
-	}
-	// Check if this is first time user trades this token
-	if (outputBalance.swapCount.equals(ONE_BI)) {
-		isNewOutputTokenUser = true
 	}
 	outputGlobalVolume.totalVolumeOut = outputGlobalVolume.totalVolumeOut.plus(event.params.finalOutputAmount)
 	outputGlobalVolume.totalVolume = outputGlobalVolume.totalVolumeIn.plus(outputGlobalVolume.totalVolumeOut)
