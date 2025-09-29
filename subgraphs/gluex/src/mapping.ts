@@ -40,9 +40,22 @@ function getDailyVolumeID(timestamp: BigInt, token: Bytes): string {
 }
 
 export function handleRouted(event: RoutedEvent): void {
+	// Update User entity first
+	let user = User.load(event.params.userAddress.toHexString())
+	if (user == null) {
+		user = new User(event.params.userAddress.toHexString())
+		user.totalSwaps = ZERO_BI
+		user.totalVolumeUSD = ZERO_BD
+		user.firstSwapAt = event.block.timestamp
+	}
+	user.totalSwaps = user.totalSwaps.plus(ONE_BI)
+	user.lastSwapAt = event.block.timestamp
+	user.save()
+
 	// Create Swap entity
 	let swap = new Swap(createEventID(event))
 	swap.uniquePID = event.params.uniquePID
+	swap.user = user.id
 	swap.userAddress = event.params.userAddress
 	swap.outputReceiver = event.params.outputReceiver
 	swap.inputToken = event.params.inputToken
@@ -57,18 +70,6 @@ export function handleRouted(event: RoutedEvent): void {
 	swap.blockNumber = event.block.number
 	swap.transactionHash = event.transaction.hash
 	swap.save()
-
-	// Update User entity
-	let user = User.load(event.params.userAddress.toHexString())
-	if (user == null) {
-		user = new User(event.params.userAddress.toHexString())
-		user.totalSwaps = ZERO_BI
-		user.totalVolumeUSD = ZERO_BD
-		user.firstSwapAt = event.block.timestamp
-	}
-	user.totalSwaps = user.totalSwaps.plus(ONE_BI)
-	user.lastSwapAt = event.block.timestamp
-	user.save()
 
 	// Update DailyVolume for input token
 	let inputDailyVolumeID = getDailyVolumeID(event.block.timestamp, event.params.inputToken)

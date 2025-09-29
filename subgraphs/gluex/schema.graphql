@@ -1,6 +1,7 @@
 type Swap @entity {
   id: ID!
   uniquePID: Bytes!
+  user: User!
   userAddress: Bytes!
   outputReceiver: Bytes!
   inputToken: Bytes!
@@ -37,7 +38,7 @@ type User @entity {
   totalVolumeUSD: BigDecimal!
   firstSwapAt: BigInt!
   lastSwapAt: BigInt!
-  swaps: [Swap!]! @derivedFrom(field: "userAddress")
+  swaps: [Swap!]! @derivedFrom(field: "user")
 }
 
 type FeeCollected @entity {
