@@ -11,8 +11,7 @@ import {
 import {
 	LEND_TOKENS,
 	INVEST_TOKENS,
-	LP_TOKENS,
-	ALL_TOKENS
+	LP_TOKENS
 } from './tokens'
 
 import {
@@ -58,7 +57,14 @@ function getOrCreateToken(tokenAddress: string): Token {
 		token = new Token(tokenAddress)
 
 		// Try to find token data in our dictionaries
-		let tokenData = ALL_TOKENS[tokenAddress]
+		let tokenData = LEND_TOKENS.get(tokenAddress)
+		if (!tokenData) {
+			tokenData = INVEST_TOKENS.get(tokenAddress)
+		}
+		if (!tokenData) {
+			tokenData = LP_TOKENS.get(tokenAddress)
+		}
+
 		if (tokenData) {
 			token.symbol = tokenData.symbol
 			token.name = tokenData.name
@@ -79,13 +85,13 @@ function getOrCreateToken(tokenAddress: string): Token {
 
 function getTokenType(inputToken: string, outputToken: string): string {
 	// Check if either input or output token is in the categorized lists
-	if (LEND_TOKENS[inputToken] || LEND_TOKENS[outputToken]) {
+	if (LEND_TOKENS.has(inputToken) || LEND_TOKENS.has(outputToken)) {
 		return "LEND"
 	}
-	if (INVEST_TOKENS[inputToken] || INVEST_TOKENS[outputToken]) {
+	if (INVEST_TOKENS.has(inputToken) || INVEST_TOKENS.has(outputToken)) {
 		return "INVEST"
 	}
-	if (LP_TOKENS[inputToken] || LP_TOKENS[outputToken]) {
+	if (LP_TOKENS.has(inputToken) || LP_TOKENS.has(outputToken)) {
 		return "LP"
 	}
 	return "SWAP"
