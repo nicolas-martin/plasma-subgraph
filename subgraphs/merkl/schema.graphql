@@ -1,0 +1,84 @@
+type User @entity {
+  id: ID! # user address
+  totalClaimed: BigInt!
+  claimCount: BigInt!
+  claims: [Claim!]! @derivedFrom(field: "user")
+  tokenClaims: [UserTokenClaim!]! @derivedFrom(field: "user")
+  firstClaimAt: BigInt!
+  lastClaimAt: BigInt!
+}
+
+type Token @entity {
+  id: ID! # token address
+  totalClaimed: BigInt!
+  claimCount: BigInt!
+  uniqueClaimers: BigInt!
+  claims: [Claim!]! @derivedFrom(field: "token")
+}
+
+type Claim @entity {
+  id: ID! # tx hash - log index
+  user: User!
+  token: Token!
+  amount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type UserTokenClaim @entity {
+  id: ID! # user address - token address
+  user: User!
+  token: Bytes!
+  totalClaimed: BigInt!
+  claimCount: BigInt!
+  lastClaimAt: BigInt!
+}
+
+type MerkleTree @entity {
+  id: ID! # merkle root
+  merkleRoot: Bytes!
+  ipfsHash: Bytes!
+  endOfDisputePeriod: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+  disputed: Boolean!
+  disputeResolved: Boolean!
+  disputeValid: Boolean
+}
+
+type Dispute @entity {
+  id: ID! # tx hash - log index
+  merkleTree: MerkleTree!
+  disputer: Bytes!
+  reason: String!
+  resolved: Boolean!
+  valid: Boolean
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type ClaimRecipientUpdate @entity {
+  id: ID! # tx hash - log index
+  user: Bytes!
+  token: Bytes!
+  recipient: Bytes!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Protocol @entity {
+  id: ID! # "protocol"
+  totalClaimed: BigInt!
+  totalClaimCount: BigInt!
+  uniqueUsers: BigInt!
+  uniqueTokens: BigInt!
+  treeUpdateCount: BigInt!
+  disputeCount: BigInt!
+  currentMerkleRoot: Bytes!
+  currentIpfsHash: Bytes!
+  lastTreeUpdateAt: BigInt!
+}
