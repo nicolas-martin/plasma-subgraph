@@ -112,7 +112,7 @@ export function handleSupply(event: SupplyEvent): void {
 	reserve.save()
 
 	let user = getOrCreateUser(
-		Bytes.fromHexString(event.params.user.toHexString().toLowerCase()),
+		Bytes.fromHexString(event.params.onBehalfOf.toHexString().toLowerCase()),
 		event.block.timestamp
 	)
 	user.totalSupplied = user.totalSupplied.plus(event.params.amount)
@@ -140,7 +140,7 @@ export function handleBorrow(event: BorrowEvent): void {
 	reserve.save()
 
 	let user = getOrCreateUser(
-		Bytes.fromHexString(event.params.user.toHexString().toLowerCase()),
+		Bytes.fromHexString(event.params.onBehalfOf.toHexString().toLowerCase()),
 		event.block.timestamp
 	)
 	user.totalBorrowed = user.totalBorrowed.plus(event.params.amount)
