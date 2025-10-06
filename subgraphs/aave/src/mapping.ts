@@ -17,6 +17,7 @@ import {
 import {
 	Reserve,
 	User,
+	UserReservePosition,
 	Supply,
 	Borrow,
 	Withdraw,
@@ -106,6 +107,22 @@ function getOrCreateUser(address: Bytes, timestamp: BigInt): User {
 	return user
 }
 
+function getOrCreateUserReservePosition(userId: string, reserveId: string, timestamp: BigInt): UserReservePosition {
+	let positionId = userId.concat('-').concat(reserveId)
+	let position = UserReservePosition.load(positionId)
+
+	if (position == null) {
+		position = new UserReservePosition(positionId)
+		position.user = userId
+		position.reserve = reserveId
+		position.currentSupplied = ZERO_BI
+		position.currentBorrowed = ZERO_BI
+		position.lastUpdateTimestamp = timestamp
+	}
+
+	return position
+}
+
 export function handleSupply(event: SupplyEvent): void {
 	let reserve = getOrCreateReserve(event.params.reserve)
 	reserve.totalSupplied = reserve.totalSupplied.plus(event.params.amount)
@@ -117,6 +134,11 @@ export function handleSupply(event: SupplyEvent): void {
 	)
 	user.totalSupplied = user.totalSupplied.plus(event.params.amount)
 	user.save()
+
+	let position = getOrCreateUserReservePosition(user.id, reserve.id, event.block.timestamp)
+	position.currentSupplied = position.currentSupplied.plus(event.params.amount)
+	position.lastUpdateTimestamp = event.block.timestamp
+	position.save()
 
 	let supply = new Supply(createEventID(event))
 	supply.reserve = reserve.id
@@ -145,6 +167,11 @@ export function handleBorrow(event: BorrowEvent): void {
 	)
 	user.totalBorrowed = user.totalBorrowed.plus(event.params.amount)
 	user.save()
+
+	let position = getOrCreateUserReservePosition(user.id, reserve.id, event.block.timestamp)
+	position.currentBorrowed = position.currentBorrowed.plus(event.params.amount)
+	position.lastUpdateTimestamp = event.block.timestamp
+	position.save()
 
 	let borrow = new Borrow(createEventID(event))
 	borrow.reserve = reserve.id
@@ -175,6 +202,11 @@ export function handleWithdraw(event: WithdrawEvent): void {
 	)
 	user.save()
 
+	let position = getOrCreateUserReservePosition(user.id, reserve.id, event.block.timestamp)
+	position.currentSupplied = position.currentSupplied.minus(event.params.amount)
+	position.lastUpdateTimestamp = event.block.timestamp
+	position.save()
+
 	let withdraw = new Withdraw(createEventID(event))
 	withdraw.reserve = reserve.id
 	withdraw.user = user.id
@@ -197,6 +229,11 @@ export function handleRepay(event: RepayEvent): void {
 	)
 	user.totalRepaid = user.totalRepaid.plus(event.params.amount)
 	user.save()
+
+	let position = getOrCreateUserReservePosition(user.id, reserve.id, event.block.timestamp)
+	position.currentBorrowed = position.currentBorrowed.minus(event.params.amount)
+	position.lastUpdateTimestamp = event.block.timestamp
+	position.save()
 
 	let repay = new Repay(createEventID(event))
 	repay.reserve = reserve.id

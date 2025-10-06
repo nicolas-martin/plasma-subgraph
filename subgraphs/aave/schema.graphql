@@ -27,8 +27,18 @@ type User @entity {
   withdraws: [Withdraw!]! @derivedFrom(field: "user")
   repays: [Repay!]! @derivedFrom(field: "user")
   liquidations: [Liquidation!]! @derivedFrom(field: "user")
+  positions: [UserReservePosition!]! @derivedFrom(field: "user")
   firstInteractionAt: BigInt!
   lastInteractionAt: BigInt!
+}
+
+type UserReservePosition @entity {
+  id: ID! # user address - reserve address
+  user: User!
+  reserve: Reserve!
+  currentSupplied: BigInt!
+  currentBorrowed: BigInt!
+  lastUpdateTimestamp: BigInt!
 }
 
 type Supply @entity {
