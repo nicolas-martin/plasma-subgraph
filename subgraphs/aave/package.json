@@ -1,0 +1,10 @@
+{
+  "name": "@subgraphs/aave",
+  "version": "1.0.0",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "goldsky subgraph deploy aave/$npm_package_version",
+    "test": "graph test"
+  }
+}

@@ -1,0 +1,133 @@
+type Reserve @entity {
+  id: ID! # reserve address
+  asset: Bytes!
+  aTokenAddress: Bytes!
+  variableDebtTokenAddress: Bytes!
+  totalSupplied: BigInt!
+  totalBorrowed: BigInt!
+  liquidityRate: BigInt!
+  variableBorrowRate: BigInt!
+  liquidityIndex: BigInt!
+  variableBorrowIndex: BigInt!
+  lastUpdateTimestamp: BigInt!
+  supplies: [Supply!]! @derivedFrom(field: "reserve")
+  borrows: [Borrow!]! @derivedFrom(field: "reserve")
+  withdraws: [Withdraw!]! @derivedFrom(field: "reserve")
+  repays: [Repay!]! @derivedFrom(field: "reserve")
+  liquidations: [Liquidation!]! @derivedFrom(field: "collateralReserve")
+}
+
+type User @entity {
+  id: ID! # user address
+  totalSupplied: BigInt!
+  totalBorrowed: BigInt!
+  totalRepaid: BigInt!
+  supplies: [Supply!]! @derivedFrom(field: "user")
+  borrows: [Borrow!]! @derivedFrom(field: "user")
+  withdraws: [Withdraw!]! @derivedFrom(field: "user")
+  repays: [Repay!]! @derivedFrom(field: "user")
+  liquidations: [Liquidation!]! @derivedFrom(field: "user")
+  firstInteractionAt: BigInt!
+  lastInteractionAt: BigInt!
+}
+
+type Supply @entity {
+  id: ID! # tx hash - log index
+  reserve: Reserve!
+  user: User!
+  onBehalfOf: Bytes!
+  amount: BigInt!
+  referralCode: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Borrow @entity {
+  id: ID! # tx hash - log index
+  reserve: Reserve!
+  user: User!
+  onBehalfOf: Bytes!
+  amount: BigInt!
+  interestRateMode: Int!
+  borrowRate: BigInt!
+  referralCode: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Withdraw @entity {
+  id: ID! # tx hash - log index
+  reserve: Reserve!
+  user: User!
+  to: Bytes!
+  amount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Repay @entity {
+  id: ID! # tx hash - log index
+  reserve: Reserve!
+  user: User!
+  repayer: Bytes!
+  amount: BigInt!
+  useATokens: Boolean!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Liquidation @entity {
+  id: ID! # tx hash - log index
+  collateralReserve: Reserve!
+  debtReserve: Bytes!
+  user: User!
+  debtToCover: BigInt!
+  liquidatedCollateralAmount: BigInt!
+  liquidator: Bytes!
+  receiveAToken: Boolean!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type FlashLoan @entity {
+  id: ID! # tx hash - log index
+  target: Bytes!
+  initiator: Bytes!
+  asset: Bytes!
+  amount: BigInt!
+  interestRateMode: Int!
+  premium: BigInt!
+  referralCode: Int!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type ReserveDataUpdate @entity {
+  id: ID! # tx hash - log index
+  reserve: Bytes!
+  liquidityRate: BigInt!
+  stableBorrowRate: BigInt!
+  variableBorrowRate: BigInt!
+  liquidityIndex: BigInt!
+  variableBorrowIndex: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Protocol @entity {
+  id: ID! # "protocol"
+  totalSupply: BigInt!
+  totalBorrows: BigInt!
+  totalRepays: BigInt!
+  totalLiquidations: BigInt!
+  totalFlashLoans: BigInt!
+  uniqueUsers: BigInt!
+  uniqueReserves: BigInt!
+}

@@ -1,0 +1,45 @@
+specVersion: 0.0.4
+schema:
+    file: ./schema.graphql
+dataSources:
+    - kind: ethereum
+      name: Aave
+      network: plasma-mainnet
+      source:
+          address: "0x925a2a7214ed92428b5b1b090f80b25700095e12"
+          abi: aave
+          startBlock: 2839177
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.7
+          language: wasm/assemblyscript
+          entities:
+              - Reserve
+              - User
+              - Supply
+              - Borrow
+              - Withdraw
+              - Repay
+              - Liquidation
+              - FlashLoan
+              - ReserveDataUpdate
+              - Protocol
+          abis:
+              - name: aave
+                file: ./abis/aave.json
+          eventHandlers:
+              - event: Supply(indexed address,address,indexed address,uint256,indexed uint16)
+                handler: handleSupply
+              - event: Borrow(indexed address,address,indexed address,uint256,uint8,uint256,indexed uint16)
+                handler: handleBorrow
+              - event: Withdraw(indexed address,indexed address,indexed address,uint256)
+                handler: handleWithdraw
+              - event: Repay(indexed address,indexed address,indexed address,uint256,bool)
+                handler: handleRepay
+              - event: LiquidationCall(indexed address,indexed address,indexed address,uint256,uint256,address,bool)
+                handler: handleLiquidationCall
+              - event: FlashLoan(indexed address,address,indexed address,uint256,uint8,uint256,indexed uint16)
+                handler: handleFlashLoan
+              - event: ReserveDataUpdated(indexed address,uint256,uint256,uint256,uint256,uint256)
+                handler: handleReserveDataUpdated
+          file: ./src/mapping.ts
