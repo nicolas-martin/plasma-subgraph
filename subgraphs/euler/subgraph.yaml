@@ -1,0 +1,358 @@
+specVersion: 1.0.0
+indexerHints:
+    prune: auto
+schema:
+    file: ./schema.graphql
+dataSources:
+    - kind: ethereum
+      name: EthereumVaultConnector
+      network: plasma-mainnet
+      source:
+          abi: EthereumVaultConnector
+          address: "0x7bdbd0A7114aA42CA957F292145F6a931a345583"
+          startBlock: 1
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.7
+          language: wasm/assemblyscript
+          entities:
+              - VaultAccount
+          abis:
+              - name: EthereumVaultConnector
+                file: ./abis/EVC.json
+          eventHandlers:
+              - event:
+                    CallWithContext(indexed address,indexed bytes19,address,indexed
+                    address,bytes4)
+                handler: handleCallWithContext
+          file: ./src/ethereum-vault-connector.ts
+    - kind: ethereum
+      name: EulerVaultFactory
+      network: plasma-mainnet
+      context:
+          evcAddress:
+              type: String
+              data: "0x7bdbd0A7114aA42CA957F292145F6a931a345583"
+          edgeFactoryPerspective:
+              type: String
+              data: "0xe0DdB3b94104757865Fe5165a59AE55767573Ea9"
+          escrowedCollateralPerspective:
+              type: String
+              data: "0xA269918388E3824b5B9316C20c8D5f9D558b73CA"
+          eulerEarnFactoryPerspective:
+              type: String
+              data: "0xE5f18b8E25E60F74d627FdDc6805Ec3cBE853573"
+          eulerEarnGovernedPerspective:
+              type: String
+              data: "0xAA8b9729a047568CB0614165509229A86e345Be1"
+          eulerUngoverned0xPerspective:
+              type: String
+              data: "0x586471dAe0AEe957e053399347b23eFD0a69eD74"
+          eulerUngovernedNzxPerspective:
+              type: String
+              data: "0x23Fd93a4AC2A0d87785Acd925BcfebA550006327"
+          evkFactoryPerspective:
+              type: String
+              data: "0xAEA0DE17C8B1BE60B2949B7F17482EBe681F93DF"
+          governedPerspective:
+              type: String
+              data: "0xBD62C2Db0E21E4B9Ee81701F130417B8400ec854"
+      source:
+          abi: EulerVaultFactory
+          address: "0x42388213C6F56D7E1477632b58Ae6Bba9adeEeA3"
+          startBlock: 1
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.7
+          language: wasm/assemblyscript
+          entities:
+              - ProxyCreated
+          abis:
+              - name: EulerVaultFactory
+                file: ./abis/EulerVaultFactory.json
+              - name: EulerVault
+                file: ./abis/EulerVault.json
+              - name: EthereumVaultConnector
+                file: ./abis/EVC.json
+              - name: Perspective
+                file: ./abis/Perspective.json
+          eventHandlers:
+              - event: ProxyCreated(indexed address,bool,address,bytes)
+                handler: handleProxyCreated
+          file: ./src/factories/euler-vault-factory.ts
+    - kind: ethereum
+      name: EulerEarnFactory
+      network: plasma-mainnet
+      context:
+          evcAddress:
+              type: String
+              data: "0x7bdbd0A7114aA42CA957F292145F6a931a345583"
+      source:
+          abi: EulerEarnFactory
+          address: "0xA3843A73e6a9F81309B931237Ca4759B3B02ff0E"
+          startBlock: 1
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.7
+          language: wasm/assemblyscript
+          entities:
+              - DeployEulerEarn
+              - EulerEarnVault
+          abis:
+              - name: EulerEarnFactory
+                file: ./abis/EulerEarnFactory.json
+              - name: EulerEarn
+                file: ./abis/EulerEarn.json
+              - name: EthereumVaultConnector
+                file: ./abis/EVC.json
+          eventHandlers:
+              - event: CreateEulerEarn(indexed address,indexed address,address,uint256,indexed address,string,string,bytes32)
+                handler: handleCreateEulerEarn
+          file: ./src/factories/euler-earn-factory.ts
+    - kind: ethereum
+      name: EulerSwapFactory
+      network: plasma-mainnet
+      context:
+          evcAddress:
+              type: String
+              data: "0x7bdbd0A7114aA42CA957F292145F6a931a345583"
+      source:
+          abi: EulerSwapFactory
+          address: "0x0000000000000000000000000000000000000000"
+          startBlock: 1
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.7
+          language: wasm/assemblyscript
+          entities:
+              - PoolDeployed
+          abis:
+              - name: EulerSwapFactory
+                file: ./abis/EulerSwapFactory.json
+              - name: EulerSwap
+                file: ./abis/EulerSwap.json
+              - name: EthereumVaultConnector
+                file: ./abis/EVC.json
+          eventHandlers:
+              - event: PoolDeployed(indexed address,indexed address,indexed address,address)
+                handler: handlePoolDeployed
+              - event: PoolConfig(indexed address,(address,address,address,uint112,uint112,uint256,uint256,uint256,uint256,uint256,uint256,address),(uint112,uint112))
+                handler: handlePoolConfig
+              - event: PoolUninstalled(indexed address,indexed address,indexed address,address)
+                handler: handlePoolUninstalled
+          file: ./src/factories/euler-swap-factory.ts
+templates:
+    - kind: ethereum
+      name: EulerVault
+      network: plasma-mainnet
+      source:
+          abi: EulerVault
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.7
+          language: wasm/assemblyscript
+          entities:
+              - BalanceForwarderStatus
+              - Borrow
+              - ConvertFees
+              - DebtSocialized
+              - Deposit
+              - EVaultCreated
+              - InterestAccrued
+              - Liquidate
+              - PullDebt
+              - Repay
+              - Transfer
+              - VaultStatus
+              - Withdraw
+          abis:
+              - name: EulerVault
+                file: ./abis/EulerVault.json
+              - name: EulerEarn
+                file: ./abis/EulerEarn.json
+              - name: EthereumVaultConnector
+                file: ./abis/EVC.json
+          eventHandlers:
+              - event: BalanceForwarderStatus(indexed address,bool)
+                handler: handleBalanceForwarderStatus
+              - event: Borrow(indexed address,uint256)
+                handler: handleBorrow
+              - event: ConvertFees(indexed address,indexed address,indexed
+                    address,uint256,uint256)
+                handler: handleConvertFees
+              - event: DebtSocialized(indexed address,uint256)
+                handler: handleDebtSocialized
+              - event: PullDebt(indexed address,indexed address,uint256)
+                handler: handlePullDebt
+              - event: Deposit(indexed address,indexed address,uint256,uint256)
+                handler: handleDeposit
+              - event: EVaultCreated(indexed address,indexed address,address)
+                handler: handleEVaultCreated
+              - event: InterestAccrued(indexed address,uint256)
+                handler: handleInterestAccrued
+              - event: Liquidate(indexed address,indexed address,address,uint256,uint256)
+                handler: handleLiquidate
+              - event: Repay(indexed address,uint256)
+                handler: handleRepay
+              - event: Transfer(indexed address,indexed address,uint256)
+                handler: handleTransfer
+              - event: VaultStatus(uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+                handler: handleVaultStatus
+              - event: Withdraw(indexed address,indexed address,indexed address,uint256,uint256)
+                handler: handleWithdraw
+              - event: GovSetCaps(uint16,uint16)
+                handler: handleUpdateVaultData
+              - event: GovSetConfigFlags(uint32)
+                handler: handleUpdateVaultData
+              - event: GovSetFeeReceiver(indexed address)
+                handler: handleUpdateVaultData
+              - event: GovSetGovernorAdmin(indexed address)
+                handler: handleUpdateVaultData
+              - event: GovSetHookConfig(indexed address,uint32)
+                handler: handleUpdateVaultData
+              - event: GovSetInterestFee(uint16)
+                handler: handleUpdateVaultData
+              - event: GovSetInterestRateModel(address)
+                handler: handleUpdateVaultData
+              - event: GovSetLTV(indexed address,uint16,uint16,uint16,uint48,uint32)
+                handler: handleUpdateVaultData
+              - event: GovSetLiquidationCoolOffTime(uint16)
+                handler: handleUpdateVaultData
+              - event: GovSetMaxLiquidationDiscount(uint16)
+                handler: handleUpdateVaultData
+          file: ./src/euler-vault.ts
+    - kind: ethereum
+      name: EulerEarn
+      network: plasma-mainnet
+      source:
+          abi: EulerEarn
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.7
+          language: wasm/assemblyscript
+          entities:
+              - EulerEarnApproval
+              - EulerEarnDeposit
+              - EulerEarnTransfer
+              - EulerEarnWithdraw
+              - EulerEarnVault
+              - EulerEarnAccrueInterest
+              - EulerEarnOwnershipTransferStarted
+              - EulerEarnOwnershipTransferred
+              - EulerEarnRevokePendingCap
+              - EulerEarnRevokePendingGuardian
+              - EulerEarnRevokePendingMarketRemoval
+              - EulerEarnRevokePendingTimelock
+              - EulerEarnSetCap
+              - EulerEarnSetCurator
+              - EulerEarnSetFee
+              - EulerEarnSetFeeRecipient
+              - EulerEarnSetGuardian
+              - EulerEarnSetIsAllocator
+              - EulerEarnSetName
+              - EulerEarnSetSupplyQueue
+              - EulerEarnSetSymbol
+              - EulerEarnSetTimelock
+              - EulerEarnSetWithdrawQueue
+              - EulerEarnSubmitCap
+              - EulerEarnSubmitGuardian
+              - EulerEarnSubmitMarketRemoval
+              - EulerEarnSubmitTimelock
+              - EulerEarnReallocateSupply
+              - EulerEarnReallocateWithdraw
+              - EulerEarnUpdateLastTotalAssets
+              - EulerEarnUpdateLostAssets
+          abis:
+              - name: EulerVault
+                file: ./abis/EulerVault.json
+              - name: EulerEarn
+                file: ./abis/EulerEarn.json
+              - name: EthereumVaultConnector
+                file: ./abis/EVC.json
+          eventHandlers:
+              - event: Approval(indexed address,indexed address,uint256)
+                handler: handleApproval
+              - event: Deposit(indexed address,indexed address,uint256,uint256)
+                handler: handleDeposit
+              - event: Transfer(indexed address,indexed address,uint256)
+                handler: handleTransfer
+              - event: Withdraw(indexed address,indexed address,indexed address,uint256,uint256)
+                handler: handleWithdraw
+              - event: ReallocateSupply(indexed address,indexed address,uint256,uint256)
+                handler: handleReallocateSupply
+              - event: ReallocateWithdraw(indexed address,indexed address,uint256,uint256)
+                handler: handleReallocateWithdraw
+              - event: UpdateLastTotalAssets(uint256)
+                handler: handleUpdateLastTotalAssets
+              - event: UpdateLostAssets(uint256)
+                handler: handleUpdateLostAssets
+              - event: AccrueInterest(uint256,uint256)
+                handler: handleAccrueInterest
+              - event: OwnershipTransferStarted(indexed address,indexed address)
+                handler: handleOwnershipTransferStarted
+              - event: OwnershipTransferred(indexed address,indexed address)
+                handler: handleOwnershipTransferred
+              - event: RevokePendingCap(indexed address,indexed address)
+                handler: handleRevokePendingCap
+              - event: RevokePendingGuardian(indexed address)
+                handler: handleRevokePendingGuardian
+              - event: RevokePendingMarketRemoval(indexed address,indexed address)
+                handler: handleRevokePendingMarketRemoval
+              - event: RevokePendingTimelock(indexed address)
+                handler: handleRevokePendingTimelock
+              - event: SetCap(indexed address,indexed address,uint256)
+                handler: handleSetCap
+              - event: SetCurator(indexed address)
+                handler: handleSetCurator
+              - event: SetFee(indexed address,uint256)
+                handler: handleSetFee
+              - event: SetFeeRecipient(indexed address)
+                handler: handleSetFeeRecipient
+              - event: SetGuardian(indexed address,indexed address)
+                handler: handleSetGuardian
+              - event: SetIsAllocator(indexed address,bool)
+                handler: handleSetIsAllocator
+              - event: SetName(string)
+                handler: handleSetName
+              - event: SetSupplyQueue(indexed address,address[])
+                handler: handleSetSupplyQueue
+              - event: SetSymbol(string)
+                handler: handleSetSymbol
+              - event: SetTimelock(indexed address,uint256)
+                handler: handleSetTimelock
+              - event: SetWithdrawQueue(indexed address,address[])
+                handler: handleSetWithdrawQueue
+              - event: SubmitCap(indexed address,indexed address,uint256)
+                handler: handleSubmitCap
+              - event: SubmitGuardian(indexed address)
+                handler: handleSubmitGuardian
+              - event: SubmitMarketRemoval(indexed address,indexed address)
+                handler: handleSubmitMarketRemoval
+              - event: SubmitTimelock(uint256)
+                handler: handleSubmitTimelock
+          file: ./src/euler-earn.ts
+    - kind: ethereum
+      name: EulerSwap
+      network: plasma-mainnet
+      source:
+          abi: EulerSwap
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.7
+          language: wasm/assemblyscript
+          entities:
+              - EulerSwapCreated
+              - EulerSwap
+          abis:
+              - name: EulerSwap
+                file: ./abis/EulerSwap.json
+              - name: EulerVault
+                file: ./abis/EulerVault.json
+              - name: EthereumVaultConnector
+                file: ./abis/EVC.json
+          eventHandlers:
+              - event: EulerSwapActivated(indexed address,indexed address)
+                handler: handleEulerSwapActivated
+              - event: Swap(indexed address,uint256,uint256,uint256,uint256,uint112,uint112,indexed address)
+                handler: handleEulerSwap
+          file: ./src/euler-swap.ts
