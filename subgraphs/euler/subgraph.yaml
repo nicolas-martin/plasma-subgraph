@@ -10,7 +10,7 @@ dataSources:
       source:
           abi: EthereumVaultConnector
           address: "0x7bdbd0A7114aA42CA957F292145F6a931a345583"
-          startBlock: 1
+          startBlock: 3022046
       mapping:
           kind: ethereum/events
           apiVersion: 0.0.7
@@ -60,7 +60,7 @@ dataSources:
       source:
           abi: EulerVaultFactory
           address: "0x42388213C6F56D7E1477632b58Ae6Bba9adeEeA3"
-          startBlock: 1
+          startBlock: 3022046
       mapping:
           kind: ethereum/events
           apiVersion: 0.0.7
@@ -90,7 +90,7 @@ dataSources:
       source:
           abi: EulerEarnFactory
           address: "0xA3843A73e6a9F81309B931237Ca4759B3B02ff0E"
-          startBlock: 1
+          startBlock: 3022046
       mapping:
           kind: ethereum/events
           apiVersion: 0.0.7
@@ -119,7 +119,7 @@ dataSources:
       source:
           abi: EulerSwapFactory
           address: "0x0000000000000000000000000000000000000000"
-          startBlock: 1
+          startBlock: 3022046
       mapping:
           kind: ethereum/events
           apiVersion: 0.0.7

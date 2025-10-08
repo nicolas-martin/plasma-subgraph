@@ -18,7 +18,7 @@
     "test": "npm run test --workspaces --if-present"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.51.0",
+    "@graphprotocol/graph-cli": "0.87.0",
     "@graphprotocol/graph-ts": "0.31.0"
   },
   "devDependencies": {
