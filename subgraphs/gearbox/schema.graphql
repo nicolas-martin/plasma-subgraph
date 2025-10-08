@@ -1,0 +1,114 @@
+type Pool @entity {
+  id: ID! # pool address
+  underlyingToken: Bytes!
+  name: String!
+  symbol: String!
+  totalAssets: BigInt!
+  totalShares: BigInt!
+  totalBorrowed: BigInt!
+  totalDebtLimit: BigInt!
+  baseInterestRate: BigInt!
+  depositCount: BigInt!
+  withdrawCount: BigInt!
+  borrowCount: BigInt!
+  repayCount: BigInt!
+  uniqueDepositors: BigInt!
+  creditManagers: [Bytes!]!
+  createdAt: BigInt!
+  lastUpdateAt: BigInt!
+}
+
+type User @entity {
+  id: ID! # user address
+  totalDeposited: BigInt!
+  totalWithdrawn: BigInt!
+  currentShares: BigInt!
+  depositCount: BigInt!
+  withdrawCount: BigInt!
+  deposits: [Deposit!]! @derivedFrom(field: "user")
+  withdrawals: [Withdraw!]! @derivedFrom(field: "user")
+  firstDepositAt: BigInt!
+  lastActivityAt: BigInt!
+}
+
+type CreditManager @entity {
+  id: ID! # credit manager address
+  pool: Pool!
+  totalBorrowed: BigInt!
+  currentDebt: BigInt!
+  debtLimit: BigInt!
+  borrowCount: BigInt!
+  repayCount: BigInt!
+  addedAt: BigInt!
+  borrows: [Borrow!]! @derivedFrom(field: "creditManager")
+  repays: [Repay!]! @derivedFrom(field: "creditManager")
+}
+
+type Deposit @entity {
+  id: ID! # tx hash - log index
+  pool: Bytes!
+  user: User!
+  sender: Bytes!
+  assets: BigInt!
+  shares: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Withdraw @entity {
+  id: ID! # tx hash - log index
+  pool: Bytes!
+  user: User!
+  sender: Bytes!
+  receiver: Bytes!
+  assets: BigInt!
+  shares: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Borrow @entity {
+  id: ID! # tx hash - log index
+  pool: Bytes!
+  creditManager: CreditManager!
+  creditAccount: Bytes!
+  amount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Repay @entity {
+  id: ID! # tx hash - log index
+  pool: Bytes!
+  creditManager: CreditManager!
+  borrowedAmount: BigInt!
+  profit: BigInt!
+  loss: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity {
+  id: ID! # tx hash - log index
+  pool: Bytes!
+  from: Bytes!
+  to: Bytes!
+  value: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type UncoveredLoss @entity {
+  id: ID! # tx hash - log index
+  pool: Bytes!
+  creditManager: Bytes!
+  loss: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
