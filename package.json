@@ -25,12 +25,20 @@
     "stargate:build": "cd subgraphs/stargate && npm run build",
     "stargate:deploy": "cd subgraphs/stargate && npm run deploy",
     "stargate:test": "cd subgraphs/stargate && npm run test",
+    "euler:codegen": "cd subgraphs/euler && npm run codegen",
+    "euler:build": "cd subgraphs/euler && npm run build",
+    "euler:deploy": "cd subgraphs/euler && npm run deploy",
+    "euler:test": "cd subgraphs/euler && npm run test",
+    "gearbox:codegen": "cd subgraphs/gearbox && npm run codegen",
+    "gearbox:build": "cd subgraphs/gearbox && npm run build",
+    "gearbox:deploy": "cd subgraphs/gearbox && npm run deploy",
+    "gearbox:test": "cd subgraphs/gearbox && npm run test",
     "codegen": "npm run codegen --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.51.0",
+    "@graphprotocol/graph-cli": "0.87.0",
     "@graphprotocol/graph-ts": "0.31.0"
   },
   "devDependencies": {

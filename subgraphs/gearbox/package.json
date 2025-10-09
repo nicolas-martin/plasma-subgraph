@@ -1,0 +1,10 @@
+{
+  "name": "@subgraphs/gearbox",
+  "version": "2.0.3",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "goldsky subgraph deploy gearbox/$npm_package_version",
+    "test": "graph test"
+  }
+}
