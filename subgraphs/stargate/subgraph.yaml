@@ -1,0 +1,30 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Stargate
+    network: plasma-mainnet
+    source:
+      address: "0x0cEb237E109eE22374a567c6b09F373C73FA4cBb"
+      abi: Stargate
+      startBlock: 3020000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - User
+        - Bridge
+        - Token
+        - DailyBridgeMetrics
+        - Protocol
+      abis:
+        - name: Stargate
+          file: ./abi/stargate.json
+      eventHandlers:
+        - event: OFTSent(indexed bytes32,uint32,indexed address,uint256,uint256)
+          handler: handleOFTSent
+        - event: OFTReceived(indexed bytes32,uint32,indexed address,uint256)
+          handler: handleOFTReceived
+      file: ./src/mapping.ts

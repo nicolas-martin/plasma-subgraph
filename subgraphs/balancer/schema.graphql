@@ -1,0 +1,116 @@
+# Balancer v3 Vault Subgraph Schema
+
+type Pool @entity {
+  id: ID! # pool address
+  factory: Bytes!
+  tokens: [Bytes!]!
+  swapFeePercentage: BigInt!
+  pauseWindowEndTime: Int!
+  pauseManager: Bytes!
+  swapFeeManager: Bytes!
+  poolCreator: Bytes!
+  totalSwaps: BigInt!
+  totalLiquidityAdded: BigInt!
+  totalLiquidityRemoved: BigInt!
+  swaps: [Swap!]! @derivedFrom(field: "pool")
+  liquidityAdds: [LiquidityAdd!]! @derivedFrom(field: "pool")
+  liquidityRemoves: [LiquidityRemove!]! @derivedFrom(field: "pool")
+  registeredAt: BigInt!
+  registeredAtBlock: BigInt!
+  lastActivityAt: BigInt!
+}
+
+type User @entity {
+  id: ID! # user address
+  totalSwaps: BigInt!
+  totalLiquidityProvided: BigInt!
+  swaps: [Swap!]! @derivedFrom(field: "user")
+  liquidityAdds: [LiquidityAdd!]! @derivedFrom(field: "user")
+  liquidityRemoves: [LiquidityRemove!]! @derivedFrom(field: "user")
+  firstActivityAt: BigInt!
+  lastActivityAt: BigInt!
+}
+
+type Swap @entity {
+  id: ID! # tx hash - log index
+  pool: Pool!
+  user: User
+  tokenIn: Bytes!
+  tokenOut: Bytes!
+  amountIn: BigInt!
+  amountOut: BigInt!
+  swapFeePercentage: BigInt!
+  swapFeeAmount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type LiquidityAdd @entity {
+  id: ID! # tx hash - log index
+  pool: Pool!
+  user: User!
+  liquidityProvider: Bytes!
+  kind: Int! # AddLiquidityKind enum
+  totalSupply: BigInt!
+  amountsAdded: [BigInt!]!
+  swapFeeAmounts: [BigInt!]!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type LiquidityRemove @entity {
+  id: ID! # tx hash - log index
+  pool: Pool!
+  user: User!
+  liquidityProvider: Bytes!
+  kind: Int! # RemoveLiquidityKind enum
+  totalSupply: BigInt!
+  amountsRemoved: [BigInt!]!
+  swapFeeAmounts: [BigInt!]!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type SwapFeeUpdate @entity {
+  id: ID! # tx hash - log index
+  pool: Pool!
+  newFeePercentage: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type TokenVolume @entity {
+  id: ID! # token address
+  token: Bytes!
+  totalVolumeIn: BigInt!
+  totalVolumeOut: BigInt!
+  totalVolume: BigInt!
+  swapCount: BigInt!
+  lastUpdated: BigInt!
+}
+
+type DailyPoolMetrics @entity {
+  id: ID! # pool address - day
+  pool: Pool!
+  date: BigInt!
+  swapCount: BigInt!
+  volumeIn: BigInt!
+  volumeOut: BigInt!
+  liquidityAdds: BigInt!
+  liquidityRemoves: BigInt!
+  uniqueSwappers: BigInt!
+}
+
+type Vault @entity {
+  id: ID! # "vault"
+  totalPools: BigInt!
+  totalSwaps: BigInt!
+  totalLiquidityAdds: BigInt!
+  totalLiquidityRemoves: BigInt!
+  uniqueUsers: BigInt!
+  totalFees: BigInt!
+}

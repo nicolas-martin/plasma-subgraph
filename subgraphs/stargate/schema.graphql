@@ -1,0 +1,70 @@
+# Stargate Bridge Protocol Subgraph Schema
+
+type User @entity {
+  id: ID! # user address
+  address: Bytes!
+  totalBridges: BigInt!
+  totalVolume: BigInt!
+  firstBridgeAt: BigInt!
+  lastBridgeAt: BigInt!
+  bridges: [Bridge!]! @derivedFrom(field: "user")
+}
+
+type Bridge @entity {
+  id: ID! # transaction hash + log index
+  user: User!
+  transactionHash: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  
+  # Bridge details
+  srcChainId: BigInt!
+  dstChainId: BigInt!
+  token: Token!
+  amount: BigInt!
+  fee: BigInt!
+  
+  # Cross-chain info
+  dstAddress: Bytes
+  nonce: BigInt
+  guid: Bytes
+  status: BridgeStatus!
+}
+
+type Token @entity {
+  id: ID! # token address
+  address: Bytes!
+  symbol: String
+  decimals: Int
+  totalBridges: BigInt!
+  totalVolume: BigInt!
+  bridges: [Bridge!]! @derivedFrom(field: "token")
+}
+
+type DailyBridgeMetrics @entity {
+  id: ID! # date + token
+  date: Int!
+  token: Bytes!
+  bridgeCount: BigInt!
+  totalVolume: BigInt!
+  totalFees: BigInt!
+  uniqueUsers: BigInt!
+}
+
+type Protocol @entity {
+  id: ID! # "stargate"
+  totalBridges: BigInt!
+  totalVolume: BigInt!
+  totalFees: BigInt!
+  uniqueUsers: BigInt!
+  supportedChains: [BigInt!]!
+  supportedTokens: [Bytes!]!
+}
+
+enum BridgeStatus {
+  PENDING
+  SENT
+  RECEIVED
+  COMPLETED
+  FAILED
+}
