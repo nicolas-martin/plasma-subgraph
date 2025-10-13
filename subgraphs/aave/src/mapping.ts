@@ -31,6 +31,7 @@ import {
 const PROTOCOL_ID = "protocol"
 const ZERO_BI = BigInt.fromI32(0)
 const ONE_BI = BigInt.fromI32(1)
+const USDT0_ADDRESS = "0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb"
 
 function createEventID(event: ethereum.Event): string {
 	return event.transaction.hash.toHexString()
@@ -132,7 +133,10 @@ export function handleSupply(event: SupplyEvent): void {
 		Bytes.fromHexString(event.params.onBehalfOf.toHexString().toLowerCase()),
 		event.block.timestamp
 	)
-	user.totalSupplied = user.totalSupplied.plus(event.params.amount)
+	// Only add to user total if it's USDT0 to ensure same denomination
+	if (event.params.reserve.toHexString().toLowerCase() == USDT0_ADDRESS.toLowerCase()) {
+		user.totalSupplied = user.totalSupplied.plus(event.params.amount)
+	}
 	user.save()
 
 	let position = getOrCreateUserReservePosition(user.id, reserve.id, event.block.timestamp)
@@ -165,7 +169,10 @@ export function handleBorrow(event: BorrowEvent): void {
 		Bytes.fromHexString(event.params.onBehalfOf.toHexString().toLowerCase()),
 		event.block.timestamp
 	)
-	user.totalBorrowed = user.totalBorrowed.plus(event.params.amount)
+	// Only add to user total if it's USDT0 to ensure same denomination
+	if (event.params.reserve.toHexString().toLowerCase() == USDT0_ADDRESS.toLowerCase()) {
+		user.totalBorrowed = user.totalBorrowed.plus(event.params.amount)
+	}
 	user.save()
 
 	let position = getOrCreateUserReservePosition(user.id, reserve.id, event.block.timestamp)
@@ -227,7 +234,10 @@ export function handleRepay(event: RepayEvent): void {
 		Bytes.fromHexString(event.params.user.toHexString().toLowerCase()),
 		event.block.timestamp
 	)
-	user.totalRepaid = user.totalRepaid.plus(event.params.amount)
+	// Only add to user total if it's USDT0 to ensure same denomination
+	if (event.params.reserve.toHexString().toLowerCase() == USDT0_ADDRESS.toLowerCase()) {
+		user.totalRepaid = user.totalRepaid.plus(event.params.amount)
+	}
 	user.save()
 
 	let position = getOrCreateUserReservePosition(user.id, reserve.id, event.block.timestamp)
