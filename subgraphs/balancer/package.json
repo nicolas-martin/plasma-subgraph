@@ -5,9 +5,6 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "goldsky subgraph deploy balancer/$npm_package_version",
-    "create-local": "graph create --node http://localhost:8020/ balancer-subgraph",
-    "remove-local": "graph remove --node http://localhost:8020/ balancer-subgraph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 balancer-subgraph",
     "test": "graph test"
   }
 }

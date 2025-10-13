@@ -5,9 +5,6 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "goldsky subgraph deploy gluex/$npm_package_version",
-    "create-local": "graph create --node http://localhost:8020/ gluex-subgraph",
-    "remove-local": "graph remove --node http://localhost:8020/ gluex-subgraph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 gluex-subgraph",
     "test": "graph test"
   }
 }
