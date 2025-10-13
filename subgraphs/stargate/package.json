@@ -1,0 +1,13 @@
+{
+  "name": "@subgraphs/stargate",
+  "version": "1.0.2",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "goldsky subgraph deploy stargate/$npm_package_version",
+    "create-local": "graph create --node http://localhost:8020/ stargate-subgraph",
+    "remove-local": "graph remove --node http://localhost:8020/ stargate-subgraph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 stargate-subgraph",
+    "test": "graph test"
+  }
+}

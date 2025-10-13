@@ -1,0 +1,129 @@
+# Fluid ERC4626 Vault Subgraph Schema
+
+type User @entity {
+  id: ID! # user address (lowercase)
+  totalDeposited: BigInt!
+  totalWithdrawn: BigInt!
+  currentShares: BigInt!
+  depositCount: BigInt!
+  withdrawCount: BigInt!
+  deposits: [Deposit!]! @derivedFrom(field: "user")
+  withdrawals: [Withdrawal!]! @derivedFrom(field: "user")
+  positions: [UserPosition!]! @derivedFrom(field: "user")
+  firstDepositAt: BigInt!
+  lastInteractionAt: BigInt!
+}
+
+type UserPosition @entity {
+  id: ID! # user address
+  user: User!
+  currentShares: BigInt!
+  totalDeposited: BigInt!
+  totalWithdrawn: BigInt!
+  lastUpdated: BigInt!
+}
+
+type Deposit @entity {
+  id: ID! # tx hash - log index
+  user: User!
+  sender: Bytes!
+  owner: Bytes!
+  assets: BigInt!
+  shares: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Withdrawal @entity {
+  id: ID! # tx hash - log index
+  user: User!
+  sender: Bytes!
+  receiver: Bytes!
+  owner: Bytes!
+  assets: BigInt!
+  shares: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity {
+  id: ID! # tx hash - log index
+  from: Bytes!
+  to: Bytes!
+  value: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type Rebalance @entity {
+  id: ID! # tx hash - log index
+  assets: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type RateUpdate @entity {
+  id: ID! # tx hash - log index
+  tokenExchangePrice: BigInt!
+  liquidityExchangePrice: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type RebalancerUpdate @entity {
+  id: ID! # tx hash - log index
+  rebalancer: Bytes!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type RewardsUpdate @entity {
+  id: ID! # tx hash - log index
+  rewardsRateModel: Bytes!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type RescueFunds @entity {
+  id: ID! # tx hash - log index
+  token: Bytes!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type DailyVaultMetrics @entity {
+  id: ID! # day timestamp
+  date: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawals: BigInt!
+  depositCount: BigInt!
+  withdrawalCount: BigInt!
+  netFlow: BigInt! # deposits - withdrawals
+  uniqueDepositors: BigInt!
+  uniqueWithdrawers: BigInt!
+}
+
+type Vault @entity {
+  id: ID! # "vault"
+  totalDeposits: BigInt!
+  totalWithdrawals: BigInt!
+  totalShares: BigInt!
+  depositCount: BigInt!
+  withdrawalCount: BigInt!
+  transferCount: BigInt!
+  rebalanceCount: BigInt!
+  uniqueUsers: BigInt!
+  currentRebalancer: Bytes!
+  currentRewardsModel: Bytes!
+  latestTokenExchangePrice: BigInt!
+  latestLiquidityExchangePrice: BigInt!
+  lastRateUpdateAt: BigInt!
+}
