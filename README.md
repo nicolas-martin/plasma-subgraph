@@ -1,80 +1,52 @@
-# Multi-Subgraph Workspace
+# Plasma Subgraph
 
-This repository contains multiple subgraph projects organized in a monorepo structure.
+A comprehensive monorepo workspace containing GraphQL subgraphs for indexing and querying blockchain data across multiple DeFi protocols on the Polygon Plasma network.
 
-## Structure
+## 🎯 Project Summary
+
+**plasma-subgraph** provides real-time blockchain data indexing for 10 different DeFi protocols using The Graph Protocol. The project creates queryable GraphQL APIs that enable developers to efficiently access on-chain data including user positions, protocol metrics, transaction history, and more.
+
+
+## 📊 Indexed Protocols
+
+| Protocol | Type | Description | Network |
+|----------|------|-------------|---------|
+| **RTB** | Gaming | On-chain "Ride The Bus" card game with house funding | Plasma Testnet |
+| **Gluex** | DEX Router | Cross-protocol swap aggregator with fee tracking | Plasma Mainnet |
+| **Aave** | Lending | Lending/borrowing positions, liquidations, flash loans | Plasma Mainnet |
+| **Merkl** | Distribution | Token claims and merkle tree-based airdrops | Plasma Mainnet |
+| **Euler** | Advanced Lending | Multi-vault lending system with dynamic templates | Plasma Mainnet |
+| **Balancer** | AMM | Automated market maker with weighted pools | Plasma Mainnet |
+| **Fluid** | Lending Vault | Vault deposits, withdrawals, and rebalancing | Plasma Mainnet |
+| **Stargate** | Bridge | Cross-chain token transfers via LayerZero | Plasma Mainnet |
+| **Gearbox** | Credit Protocol | Credit pool operations and leveraged positions | Plasma Mainnet |
+
+## 🏗️ Project Structure
 
 ```
+rtb-subgraph/
 ├── subgraphs/
 │   ├── rtb/          # Ride The Bus game subgraph
-│   └── [other]/      # Future subgraphs
+│   ├── gluex/        # Swap router subgraph
+│   ├── aave/         # Lending protocol subgraph
+│   ├── merkl/        # Token distribution subgraph
+│   ├── euler/        # Advanced lending subgraph
+│   ├── balancer/     # AMM protocol subgraph
+│   ├── fluid/        # Vault lending subgraph
+│   ├── stargate/     # Cross-chain bridge subgraph
+│   └── gearbox/      # Credit protocol subgraph
 ├── package.json      # Root workspace configuration
-└── README.md
+└── README.md         # This file
 ```
 
-## Available Subgraphs
-
-### RTB (Ride The Bus)
-A subgraph for the Ride The Bus card game on-chain implementation.
-
-## Commands
-
-### RTB Subgraph
-```bash
-# Generate TypeScript types
-npm run rtb:codegen
-
-# Build the subgraph
-npm run rtb:build
-
-# Deploy the subgraph
-npm run rtb:deploy
-
-# Run tests
-npm run rtb:test
+### Subgraph Structure
+Each subgraph follows a standard layout:
 ```
-
-### Gluex Subgraph
-```bash
-# Generate TypeScript types
-npm run gluex:codegen
-
-# Build the subgraph
-npm run gluex:build
-
-# Deploy the subgraph
-npm run gluex:deploy
-
-# Run tests
-npm run gluex:test
+subgraph-name/
+├── package.json          # Subgraph metadata and scripts
+├── subgraph.yaml         # Data sources and contract configuration
+├── schema.graphql        # GraphQL entity definitions
+├── src/                  # AssemblyScript mapping handlers
+├── abi/                  # Smart contract ABIs
+└── generated/           # Auto-generated types (after codegen)
 ```
-
-### All Subgraphs
-```bash
-# Generate all subgraphs
-npm run codegen
-
-# Build all subgraphs
-npm run build
-
-# Test all subgraphs
-npm run test
-```
-
-## Adding a New Subgraph
-
-1. Create a new directory under `subgraphs/`
-2. Add a `package.json` with the subgraph name
-3. Add the standard subgraph files:
-   - `schema.graphql`
-   - `subgraph.yaml`
-   - `src/` directory with mappings
-   - `abis/` directory with contract ABIs
-4. Add commands to root `package.json` following the pattern:
-   ```json
-   "name:codegen": "cd subgraphs/name && npm run codegen"
-   ```
-
-## Development
-
-Each subgraph is independent and can be developed separately. Use the workspace commands to manage individual subgraphs or all at once.
